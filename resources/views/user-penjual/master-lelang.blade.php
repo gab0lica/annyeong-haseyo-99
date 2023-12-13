@@ -151,8 +151,8 @@
                                                 <i class="fas fa-edit text-dark text-gradient me-2" aria-hidden="true"></i> <span class="col-md-5 font-weight-bold mb-2 text-sm">{{$item['buat']}}</span><br>
                                             </p>
                                             <div class="d-flex align-items-center justify-content-between">
-                                                <a href="{{url('/form-lelang/'.$item['id'])}}" class="btn bg-gradient-{{$item['status'] == 3 ? 'success' : ($item['status'] == 2 ? 'danger' : ($item['pesan'] == 'belum-penawar' ? 'warning' : 'info'))}} btn-sm mb-0 btn-rounded" title='Lelang'>
-                                                    {{$item['status'] == 3 ? 'Lihat Hasil' : ($item['status'] == 2 ? 'Perbaiki' : ($item['pesan'] == 'belum-penawar' ? 'Ubah' : 'Lihat'))}} Lelang
+                                                <a href="{{url('/form-lelang/'.$item['id'])}}" class="btn bg-gradient-{{$item['status'] == 3 ? 'success' : ($item['status'] == 0 || $item['status'] == 2 ? 'danger' : ($item['pesan'] == 'belum-penawar' ? 'warning' : 'info'))}} btn-sm mb-0 btn-rounded" title='Lelang'>
+                                                    {{$item['status'] == 3 ? 'Lihat Hasil' : ($item['status'] == 0 || $item['status'] == 2 ? 'Perbaiki' : ($item['pesan'] == 'belum-penawar' ? 'Ubah' : 'Lihat'))}} Lelang
                                                 </a>
                                                 <div class="avatar-group">
                                                     @if($item['ikut'] > 0)

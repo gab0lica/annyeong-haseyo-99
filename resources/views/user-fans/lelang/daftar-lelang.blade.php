@@ -146,7 +146,7 @@
                                             <select class="form-control" id="artis" name="artis" value="{{ $filter['artis'] == null ? old('artis') : $filter['artis'] }}">
                                                 <option>{{'Tidak Ada'}}</option>
                                                 @foreach ($artis as $item)
-                                                <option class="text-capitalize" {{ $filter['artis'] == $item->nama ? 'selected' : '' }}>{{$item->nama}}</option>
+                                                <option class="text-capitalize" {{ $filter['artis'] == $item->nama ? 'selected' : '' }}>{{$item->nama.(auth()->user()->artis == $item->nama ? ' (Favorit)' : '')}}</option>
                                                 {{-- <option>{{$item->nama}}</option> --}}
                                                 @endforeach
                                             </select>
@@ -233,11 +233,11 @@
                     </li>
                     @else
                     <li class="list-group-item border-0 d-flex align-items-center m-0 p-0">
-                        <h5 class="text-dark font-weight-bolder mx-auto">
+                        <h5 class="text-dark text-center font-weight-bolder mx-auto">
                             @if ($filter['mulai'] == null)
                             Urut Berdasarkan Waktu Dimulai Lelang Terbaru <i class="fas fa-hourglass-start text-primary text-gradient me-1 py-1" aria-hidden="true"></i>
                             @else
-                            Filter: Status {{Str::upper($filter['status'])}} dari {{$filter['mulai']}} - {{$filter['selesai']}}
+                            Filter: Lelang dengan Penjual <u>{{$filter['namapenjual']}}</u>, Kategori <u>{{$filter['kategori']}}</u>, Artis <u>{{$filter['artis']}}</u>,<br> Tanggal dan Waktu dari <u>{{$filter['tglmulai']}} - {{$filter['tglselesai']}}</u>
                             @endif
                         </h5>
                     </li>

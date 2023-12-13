@@ -192,6 +192,7 @@ class MasterWebCrawler extends Controller
                     ->where('status','=',0)
                     ->where('web_id','=',$nomor)
                     ->where('link','like',$kalimat)
+                    ->where('tgl_crawler','=',$tglcrawlering)
                     // ->orderBy(['berita_id','asc'],['web_id','asc'])
                     ->orderByRaw('berita_id asc, web_id asc')
                     ->select('link')
@@ -690,7 +691,7 @@ class MasterWebCrawler extends Controller
                                 // dd($tr->getResponse($datakonten)."<hr>");
                                 $transkonten = $tr->setSource($korea)->setTarget('id')->translate($datakonten);
                             }
-                            print(($limit < 4 || $limit == 6) ? ($limit.' => '.$idx." > ".$transkonten."<hr>") : $limit.'--');
+                            // print(($limit < 4 || $limit == 6) ? ($limit.' => '.$idx." > ".$transkonten."<hr>") : $limit.'--');
                             if($limit < 3) {
                                 if($limit == 0) {
                                     $konten_jdl = $datakonten;
@@ -898,7 +899,7 @@ class MasterWebCrawler extends Controller
                             $updstatus = DB::table('berita')
                                 ->where("berita_id","=", $dbase[$iterasi]->berita_id)
                                 ->update( ["status" => 3] );
-                            print('update disini<br>');
+                            // print('update disini<br>');
                         }
                     }
 

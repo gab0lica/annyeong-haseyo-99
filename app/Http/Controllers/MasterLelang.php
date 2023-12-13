@@ -198,7 +198,12 @@ class MasterLelang extends Controller
         }
         $jumlahtidak = 0;
         $jumlahselesai = 0;
+        $jumlahadmin = 0;
         $lelang = [];
+        $label = [];
+        $koinakhir = [];
+        $persenadmin = [];
+
         $dbase = DB::table('users')
             ->join('konfirmasi_penjual','konfirmasi_penjual.penggemar_id','=','users.id')
             ->join('lelang','lelang.penjual_id','=','users.id')
@@ -207,12 +212,13 @@ class MasterLelang extends Controller
                 users.updated_at as updated_at, users.created_at as created_at,
                 lelang.id as lelang, lelang.admin_id as admin,
                 lelang.nama_produk as produk, lelang.deskripsi_produk as detail, lelang.gambar_produk as gambar,
-                lelang.koin_minimal as harga, lelang.tanggal_mulai as mulai, lelang.tanggal_selesai as selesai, lelang.status as status')
+                lelang.koin_minimal as harga, lelang.tanggal_mulai as mulai, lelang.tanggal_selesai as selesai, lelang.status as status,
+                lelang.transaksi_pemenang as transpemenang, lelang.transaksi_admin as transadmin')
             // ->groupBy('id','username','nama','kota','created_at','updated_at','gambar')
             ->orderBy('lelang.tanggal_mulai','desc')
             ->get();
 
-        foreach ($dbase as $value) {
+        foreach ($dbase as $i => $value) {
             $bulanInggris = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             $bulanIndonesia = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
@@ -225,17 +231,30 @@ class MasterLelang extends Controller
             $mulai = str_replace($bulanInggris, $bulanIndonesia,date("d F Y H:i", $tanggal_format));
             $tanggal_format = strtotime($value->selesai);
             $selesai = str_replace($bulanInggris, $bulanIndonesia,date("d F Y H:i", $tanggal_format));
-
-            $jumlahikut = DB::table('pengikut')->whereRaw('penjual_id = '.$value->user.' and status=1')->count('pengikut_id');
             $ikut = DB::table('lelang_bid')
                 ->whereRaw('lelang_id = '.$value->lelang.' and status>=1')
                 ->selectRaw('user_id')
                 // ->groupBy('user_id')
                 ->get();
+            $pemenang = DB::table('transaksi_koin')->whereRaw("jenis like '%lelang%' and id = '".$value->transpemenang."'")->get();
+            $admin = DB::table('transaksi_koin')->whereRaw("jenis like '%lelang%' and id = '".$value->transadmin."'")->get();
 
-            // dd($value->status);
-            if($value->status == 0) $jumlahtidak += 1;
-            else if($value->status == 3) $jumlahselesai += 1;
+            $koin = -1;
+            $persen = -1;
+            if($jenis == 'transaksi' && $value->admin == auth()->user()->id) {
+                if($value->status == 3) $jumlahselesai += 1;
+                if(count($pemenang) == 1) $koin = ($pemenang[0]->koin)*-1;
+                else if($value->status < 3) $koin = 0;
+                if(count($admin) == 1) $persen = $admin[0]->koin;
+                else if($value->status < 3) $persen = 0;
+                $jumlahadmin += 1;
+                // $label[] = "No.".($i+1);
+                // $koinakhir[] = ($koin > -1 ? $koin : $pemenang[0]->koin);
+                // $persenadmin[] = ($persen > -1 ? $persen : $admin[0]->koin);
+            } else if($jenis == 'daftar') {
+                if($value->status == 0) $jumlahtidak += 1;
+                else if($value->status == 3) $jumlahselesai += 1;
+            }
             $lelang[] = [
                 'lelang' => $value->lelang,
                 'produk' => $value->produk,
@@ -249,15 +268,15 @@ class MasterLelang extends Controller
                 'username' => $value->username,
                 'nama' => $value->nama,
                 'kota' => $value->kota,
-                'admin'=> $value->admin,
                 'created_at' => $created,
                 'updated_at' => $updated,
-                'pengikut' => $jumlahikut,
+                'admin'=> $value->admin,
+                'pemenang' => ($jenis == 'transaksi' && count($pemenang) == 1 ? $koin : ($value->transpemenang == null ? 0 : $value->transpemenang)),
+                'persenadmin'=> ($jenis == 'transaksi' && count($admin) == 1 ? $persen : ($value->transadmin == null ? 0 : $value->transadmin)),
                 'ikut' => count($ikut)
             ];
         }
-        if($jenis != 'daftar') $lelang = [];
-        else $jenis = 'lelang';
+        if($jenis == 'daftar') $jenis = 'lelang';
 
         // dd(count($lelang));
         $view = 'user-admin/lelang/data-'.$jenis;
@@ -267,9 +286,9 @@ class MasterLelang extends Controller
             'pesan' => 'belum',
             'tidak' => $jumlahtidak,
             'selesai' => $jumlahselesai,
-            'lelang' => $lelang
-            ]
-        );
+            'admin' => [$jumlahadmin,$label,$koinakhir,$persenadmin],
+            'lelang' => $lelang,
+        ]);
     }
 
     public function detailLelang($id) {
@@ -420,7 +439,7 @@ class MasterLelang extends Controller
             $nonaktif = DB::table('lelang')
                 ->whereRaw("id = ".$id." and admin_id=".auth()->user()->id)
                 ->update([
-                    'status' => 0,
+                    'status' => ($nonaktif[0]->status == 1 ? 0 : $nonaktif[0]->status),
                 ]);
             return redirect()->route('detailLelang',['id'=> $id]);
         }

@@ -149,7 +149,7 @@
                                         ($detail['status'] == 1 ?
                                             ($pesan == 'belum-penawar' ? 'Dianggap Perbaikan Karena Lelang Selesai Tanpa Penawar' : 'Sedang Berjalan') :
                                         ($detail['status'] == -1 ? 'Belum Dirilis' :
-                                        ($detail['status'] == 3 ? 'Lelang Selesai' : 'Selesai'))) }}
+                                        ($detail['status'] == 3 ? 'Lelang Selesai' : 'Non-Aktif'))) }}
                                 </h6>
                             </div>
                         </div>

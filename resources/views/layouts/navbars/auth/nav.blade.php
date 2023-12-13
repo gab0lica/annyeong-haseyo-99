@@ -24,15 +24,15 @@
                 ( Request::is('sejarah-berita/*') || Request::is('cari-sejarah') ? 'Sejarah Bacaan' :
                 ( Request::is('user/*') || Request::is('konfirmasi-penjual') ? 'Laporan Daftar User' :
                 ( Request::is('user-profile') || Request::is('penjual/profile') || Request::is('penjual/registrasi') || Request::is('profile/admin') ? 'Profile' :
-                ( Request::is('daftar-lelang') || Request::is('lihat-lelang/*') ? 'Daftar Lelang' :
-                (  Request::is('sejarah-lelang') ? 'Sejarah Lelang' :
+                ( Request::is('daftar-lelang') || Request::is('lihat-lelang/*') || Request::is('filter-lelang') ? 'Daftar Lelang' :
+                ( Request::is('sejarah-lelang') || Request::is('filter-sejarah') ? 'Sejarah Lelang' :
                 ( Request::is('daftar-penjual/*') || Request::is('lihat-penjual/*') ? 'Daftar Penjual' :
-                ( Request::is('master-lelang') || Request::is('form-lelang/*') || Request::is('penghasilan-lelang') || Request::is('daftar-penawar/*') ? 'Master Lelang' :
+                ( Request::is('master-lelang/*') || Request::is('form-lelang/*') || Request::is('penghasilan-lelang') || Request::is('daftar-penawar/*') ? 'Master Lelang' :
                 ( Request::is('nota-koin/*') ? 'Nota Transaksi Koin' :
                 ( Request::is('nota-lelang/*') ? 'Nota Lelang' :
                 ( Request::is('transaksi-koin/*') ? 'Transaksi Koin' :
                 ( Request::is('deposito/*') ? 'Laporan Transaksi Koin' :
-                ( Request::is('lelang/*') ? 'Laporan Lelang' :
+                ( Request::is('lelang/*') || Request::is('detail-lelang/*') ? 'Laporan Lelang' :
                 ( Request::is('deposito-penggemar/*') || Request::is('deposito-penjual/*') || Request::is('detail-deposito/*') ? 'Detail Deposito' :
                 ( Request::is('ongkir/*') || Request::is('ongkir') ? 'Cek Ongkos Pengiriman' :
                 'Berubah'
@@ -49,7 +49,8 @@
                  //Request::is('berita-baca/*') || Request::is('detail-baca') ? 'Daftar User Membaca Berita'.(Request::is('/grafik') ? ' (Dalam Grafik)' : '') :
                 ( Request::is('*/semua') ?
                     ( Request::is('berita/semua') || Request::is('sejarah-berita/semua') ? 'Berita dari Semua Website Korea' :
-                    'Daftar Penjual') :
+                    ( Request::is('daftar-penjual/semua') ? 'Daftar Penjual' :
+                    ( Request::is('master-lelang/*') ? 'Semua Daftar Lelang yang dibuat' : 'Semua' ))) :
                 ( Request::is('cari-*') ? 'Cari Berita' :
                 ( Request::is('lihat-berita/*') ? 'Membaca Berita' :
                 ( Request::is('profile/admin') ? 'Admin' :
@@ -61,7 +62,8 @@
                 ( Request::is('penjual/registrasi') ? 'Registrasi Penjual' :
                 ( Request::is('deposito-koin') || Request::is('daftar-pengikut') ? str_replace('-', ' ', Request::path())." Anda" :
                 ( Request::is('beli-koin') || Request::is('tukar-koin') || Request::is('konfirmasi-penjual')
-                    || Request::is('daftar-lelang') || Request::is('sejarah-lelang') ? str_replace('-', ' ', Request::path()) :
+                    || Request::is('daftar-lelang') || Request::is('sejarah-lelang')
+                    || Request::is('filter-lelang') || Request::is('filter-sejarah') ? str_replace('-', ' ', Request::path()) :
                 ( Request::is('lihat-lelang/*') ? 'Lihat Lelang' :
                 ( Request::is('daftar-penjual/semua') ? 'Semua Penjual yang Aktif' :
                 ( Request::is('daftar-penjual/ikuti') ? 'Mengikuti Penjual' :
@@ -72,12 +74,12 @@
                 ( Request::is('lelang/transaksi') ? 'Transaksi Penghasilan Lelang' :
                 ( Request::is('lelang/daftar') ? 'Daftar Lelang' :
                 // ( Request::is('lelang/laporan') ? 'Lampiran Lelang' :
-                ( Request::is('master-lelang') ? 'Semua Daftar Lelang yang dibuat' :
                 ( Request::is('form-lelang/baru') ? 'Buat Lelang Baru' :
                 ( Request::is('form-lelang/*') ? 'Ubah Lelang' :
                 ( Request::is('penghasilan-lelang') ? 'Penghasilan Lelang' :
                 ( Request::is('daftar-penawar/*') ? 'Daftar Semua Penawar pada Lelang' :
                 ( Request::is('ongkir/*') || Request::is('ongkir') ? 'Cek Ongkos Pengiriman' :
+                ( Request::is('detail-lelang/*') ? 'Lihat Detail Lelang' :
                     'Berubah'
                 )))))))))))))))))))))))))))))))}}
             </h6>

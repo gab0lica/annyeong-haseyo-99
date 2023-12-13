@@ -50,10 +50,9 @@
                   </form>
                 </div>
                 <div class="card-footer text-center pt-0 px-lg-2 px-1">
-                <small class="text-muted">Lupa Password? Buat ulang Password baru
+                {{-- <small class="text-muted">Lupa Password? Buat ulang Password baru
                   <a href="/reset-password" class="text-info text-gradient font-weight-bold">disini.</a>
-                  {{-- login/forgot-password --}}
-                </small>
+                </small> --}}
                   <p class="mb-4 text-sm mx-auto">
                     Akun belum didaftarkan?
                     <a href="register" class="text-info text-gradient font-weight-bold">Registrasi</a>

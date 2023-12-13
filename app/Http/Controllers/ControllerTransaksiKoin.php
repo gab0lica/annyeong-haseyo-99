@@ -495,7 +495,7 @@ class ControllerTransaksiKoin extends Controller
                 koin as koin, tanggal as tanggal,
                 status as statusnya')
             ->get();
-        $sukses = false;
+        $sukses = true;
         $jenis = (count($transdepo) == 1 ? $transdepo[0]->jenis : -1);
         // dd([$transdepo,strpos($jenis,'lelang') > -1]);
 
@@ -536,7 +536,23 @@ class ControllerTransaksiKoin extends Controller
                         lelang.tanggal_selesai as selesai, lelang.transaksi_pemenang as pemenang, lelang.pengiriman_id as idkirim,
                         lelang.transaksi_penjual as penjual, lelang.transaksi_admin as admin')// lelang.persentase_penjual as persen,
                     ->get();
-                // dd($transdepo[0]);
+                // dd($transdepo[0]->idlelang);
+                // $gagal = false;
+                if(count($transdepo) == 0){//transaksi gagal bayar lelang
+                    $transdepo = DB::table('transaksi_koin')
+                        ->join('lelang','lelang.id','=','transaksi_koin.total_bayar')
+                        // ->join('pengiriman','pengiriman.id','=','lelang.pengiriman_id')
+                        ->whereRaw('transaksi_koin.user_id = '.auth()->user()->id.' and transaksi_koin.id = '.$id)
+                        ->selectRaw('transaksi_koin.jenis as jenis, transaksi_koin.transaksi_kode as kode,
+                            transaksi_koin.koin as koin, transaksi_koin.tanggal as tanggal,
+                            transaksi_koin.status as statusnya,
+                            lelang.id as idlelang, lelang.nama_produk as produk,
+                            lelang.tanggal_selesai as selesai, lelang.transaksi_pemenang as pemenang, lelang.pengiriman_id as idkirim,
+                            lelang.transaksi_penjual as penjual, lelang.transaksi_admin as admin')// lelang.persentase_penjual as persen,
+                        ->get();
+                    $sukses = false;
+                    // dd($transdepo[0]->pemenang != $id);
+                }
                 if(count($transdepo) == 1){
                     $pengiriman = [];
                     if($transdepo[0]->idkirim != null) $pengiriman = DB::table('pengiriman')->whereRaw('id = '.$transdepo[0]->idkirim)->get();
@@ -644,6 +660,7 @@ class ControllerTransaksiKoin extends Controller
                     ->update(
                     array(
                         'status' => 'Gagal',
+                        'total_bayar' => $request->lelang,//lelang_id
                         'tanggal' => $tgl_bayar,
                         'status' => ($statusAkhir)
                     )
@@ -720,13 +737,6 @@ class ControllerTransaksiKoin extends Controller
             return redirect('/login');
         }
         $lelang = DB::table('lelang')->whereRaw('id='.$id)->get();
-        // dd($lelang);
-        // $statusnya = updateStatusLelang($value->tanggal_mulai, $value->tanggal_selesai,[
-        //     'id' => $value->id,
-        //     'status' => $value->status,
-        //     'penjual' => auth()->user()->id,
-        //     'admin' => $value->admin_id,
-        // ]);
         // /*
         $allbid = DB::table('lelang_bid')
             ->join('lelang','lelang_bid.lelang_id','=','lelang.id')
@@ -802,7 +812,7 @@ class ControllerTransaksiKoin extends Controller
                 ->whereRaw("jenis='lelang-penjual' and id=".$lelang[0]->transaksi_penjual)
                 ->update(array(
                     // 'id' => $idnya,
-                    'koin' => $allbid[$pemenangbaru]->koin,//+((int)(($lelang['persen-penjual']*$allbid[$pemenangbaru]->koin)/100))
+                    'koin' => (($allbid[$pemenangbaru]->koin)-((int)((5*$allbid[$pemenangbaru]->koin)/100))),//+((int)(($lelang['persen-penjual']*$allbid[$pemenangbaru]->koin)/100))
                     // 'jumlah' => 1,
                     // 'total_bayar' => 0,
                     // 'user_id' => $lelang['penjual'],

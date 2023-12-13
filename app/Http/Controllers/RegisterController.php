@@ -56,13 +56,15 @@ class RegisterController extends Controller
 
         $user = User::create($attributes);
 
-        $tgl = date('d').'-';
-        $tanggal = ( (int) date('d') );
-        $jam = ( (int) date('H') )+7;
-        if($jam >= 24) {$tanggal += 1; $jam = "0".($jam - 24);}
-        elseif($jam < 10) {$jam = "0".$jam;}
-        if($tanggal < 10) $tgl = date("Y-m")."-0".$tanggal.' '.$jam.date(':i:s');
-        else if ($tanggal < 32) $tgl = date("Y-m-").$tanggal.' '.$jam.date(':i:s');
+        // $tgl = date('d').'-';
+        date_default_timezone_set('Asia/Jakarta');
+        $tgl = date("Y-m-d H:i:s");
+        // $tanggal = ( (int) date('d') );
+        // $jam = ( (int) date('H') )+7;
+        // if($jam >= 24) {$tanggal += 1; $jam = "0".($jam - 24);}
+        // elseif($jam < 10) {$jam = "0".$jam;}
+        // if($tanggal < 10) $tgl = date("Y-m")."-0".$tanggal.' '.$jam.date(':i:s');
+        // else if ($tanggal < 32) $tgl = date("Y-m-").$tanggal.' '.$jam.date(':i:s');
 
         $akunBaru = DB::table('users')->where('username','=',$attributes['username'])->get('id');
         if(count($akunBaru) == 1){

@@ -131,7 +131,7 @@
                                 <label for="koin"><u>{{ 'Biaya Registrasi' }}</u></label>
                                 {{-- <div class="@error('koin') border border-danger rounded-3 @enderror"> --}}
                                 <h5 class="mx-2 font-weight-bolder text-dark">20 Koin
-                                    @if($koin <= 0 && $pesan == 'tidak cukup')
+                                    @if($koin < 20 && $pesan == 'tidak cukup')
                                     <span class="font-weight-bold text-danger text-sm">(Total Koin Anda kurang dari 20 Koin)</span>
                                     @elseif($koin > 0)
                                     <span class="mx-2 font-weight-bold text-secondary text-sm">({{ $pesan == 'sudah' || $pesan == 'admin' ? 'Anda telah membayar lunas Biaya Registrasi' : 'Koin Anda cukup untuk membayar Biaya Registrasi'}})</span>
@@ -209,7 +209,7 @@
                         @if(count($penjual) > 0)<input type="hidden" name="transaksi" id="transaksi" value="{{$penjual[0]['trans']}}">@endif
                         <div class="col-md-6">
                             <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn bg-gradient-info btn-md mt-4 mb-4" {{ count($penjual) > 0 ? ( $penjual[0]['konfirmasi'] > 0 ? '' : 'disabled') : ''}}>
+                                <button type="submit" class="btn bg-gradient-info btn-md mt-4 mb-4" {{ count($penjual) > 0 ? ( $penjual[0]['konfirmasi'] > 0 ? '' : 'disabled') : ($koin < 20 ? 'disabled' : '')}}>
                                     {{ ($mode == 'registrasi' && $pesan != 'admin' && $pesan != 'ulang' ? 'Kirim Registrasi' : ($penjual[0]['konfirmasi'] == 2 ? 'Kirim Ulang Registrasi' : 'Menunggu Konfirmasi' )) }}</button>
                             </div>
                         </div>

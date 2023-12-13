@@ -234,10 +234,11 @@ class InfoUserController extends Controller
             ->select('konfirmasi_penjual.ktp_nomor as ktp','konfirmasi_penjual.ktp_foto as foto')
             ->get();
 
+        // dd(count($db));
+
         $gmb = '';
-        if ($request->foto == null || $request->ktp == null) return redirect()->back()->with(['koin',$ubahDepo])->withErrors(['ktp' => 'Wajib Mengisi Seluruh Data yang Tersedia.']);
-        else if(count($db) == 0) {
-            // dd(count($db));
+        if(count($db) == 0) {
+            if ($request->foto == null || $request->ktp == null) return redirect()->back()->with(['koin',$ubahDepo])->withErrors(['ktp' => 'Wajib Mengisi Seluruh Data yang Tersedia.']);
             // && $request->trans == 'none' && auth()->user()->role == 2 && $request->mode == 'registrasi'
             $attributes = request()->validate([
                 'ktp' => ['required','numeric'],
@@ -306,6 +307,7 @@ class InfoUserController extends Controller
             }
             else return redirect()->back()->with(['koin',$ubahDepo])->withErrors(['biaya' => 'Koin Anda Tidak Mencukupi.']);
         } else if (count($db) == 1){//edit perbaikan registrasi
+            // dd($request);
             $attributes = request()->validate([
                 'ktp' => ['numeric'],
                 'foto' => ['image','between:1,10240', Rule::dimensions()->maxWidth(10000)->maxHeight(10000)]//5120*2 itu 10 MB

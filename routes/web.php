@@ -124,7 +124,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('daftar-penjual/{mode}', [ControllerLelang::class,'getPenjual'])->name('daftarPenjual');
     Route::get('ikuti-penjual/{id}', [ControllerLelang::class,'ikutiPenjual']);
     Route::post('ikut-lelang', [ControllerLelang::class,'ikutLelang']);
-    Route::get('pengikut-lelang/{id}', [ControllerLelang::class,'pengikutLelang']);
+    // Route::get('pengikut-lelang/{id}', [ControllerLelang::class,'pengikutLelang']);
     Route::get('sejarah-lelang', [ControllerLelang::class,'sejarahLelang']);
     Route::post('filter-sejarah', [ControllerLelang::class,'filterSejarah']);
     Route::get('deposito-koin', [ControllerTransaksiKoin::class,'getDeposito'])->name('deposito');

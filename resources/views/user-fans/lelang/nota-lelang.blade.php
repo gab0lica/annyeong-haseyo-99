@@ -111,8 +111,8 @@
                             {{ $jenis == 'lelang' ? $koin*-1 : ($jenis == 'lelang-penjual' ? $koin : '') }} Koin
                         </div>
                     </li>
+                    @if ($berhasil == true)
                     <hr class="my-2 horizontal-dark">
-                    {{-- @if ($jenis == 'lelang-penjual') --}}
                     <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
                         <span class="mb-1 text-dark text-sm">Nama Penerima</span>
                         <span class="d-flex align-items-center text-dark text-sm font-weight-bold">
@@ -125,7 +125,6 @@
                             {{ $pemenang['userTelepon'] }}
                         </span>
                     </li>
-                    {{-- @endif --}}
                     @if( $alamatkirim != null)
                     <hr class="my-2 horizontal-dark">
                     <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
@@ -146,7 +145,7 @@
                     <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
                         <span class="mb-1 text-dark text-sm">Alamat Pengiriman</span>
                         <span class="d-flex align-items-center font-weight-bolder text-gradient text-dark text-sm">
-                            {{  $alamatkirim != null ? $alamatkirim : ($jenis == 'lelang-penjual' ? 'Menunggu Pembayaran' : '') }}
+                            {{  $alamatkirim != null ? $alamatkirim : ($jenis == 'lelang-penjual' ? 'Menunggu Pembayaran' : '-') }}
                         </span>
                     </li>
                     @endif
@@ -160,8 +159,8 @@
                     @endif
                     @if($pengiriman['tujuan'] != null && $jenis == 'lelang-penjual')
                     <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
-                        <span class="mb-1 text-dark text-sm">Lokasi Destinasi (Penggemar)</span>
-                        <span class="d-flex align-items-center text-dark text-sm font-weight-bold">
+                        <span class="col-md-4 mb-1 text-dark text-sm">Lokasi Destinasi (Penggemar)</span>
+                        <span class="text-dark text-end text-sm font-weight-bold">
                             {{ $pengiriman['tujuan'] == null ? '-' : $pengiriman['tujuan'] }} <strong class="ms-2 font-weight-bolder text-danger">({{ $alamatkirim }})</strong>
                         </span>
                     </li>
@@ -249,6 +248,7 @@
                         @endif
                         <button type="submit" class="btn bg-gradient-dark my-2">Bayar</button>
                     </form>
+                    @endif
                     @endif
                     <div class="row">
                         {{-- <span class="text-sm text-center text-danger m-0">

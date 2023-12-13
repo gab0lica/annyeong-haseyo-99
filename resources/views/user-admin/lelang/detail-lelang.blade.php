@@ -191,7 +191,7 @@
                                 <li class="list-group-item border-0 d-flex justify-content-between border-radius-lg">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <textarea class="form-control" {{$data['idadmin'] == auth()->user()->id ? ($data['status'] != 2 ? '' : 'disabled') : 'disabled'}} rows="4" id="catatan" name="catatan" placeholder="Tuliskan Catatan Apabila Lelang Harus Diperbaiki">{{$data['catatan'] == null ? null : $data['catatan']}}</textarea>
+                                            <textarea class="form-control" {{$data['idadmin'] == auth()->user()->id ? ($data['status'] < 2 ? '' : 'disabled') : 'disabled'}} rows="4" id="catatan" name="catatan" placeholder="Tuliskan Catatan Apabila Lelang Harus Diperbaiki">{{$data['catatan'] == null ? null : $data['catatan']}}</textarea>
                                             <input type="hidden" id="idlelang" name="idlelang" value="{{$data['lelang']}}">
                                             <input type="hidden" id="idadmin" name="idadmin" value="{{$data['idadmin']}}">
                                         </div>
@@ -200,9 +200,9 @@
                                                 id='perbaikan' name='perbaikan' class="btn bg-gradient-dark col-md-12">
                                                 Kirim Catatan Perbaikan
                                             </button>
-                                            <a href="{{$data['idadmin'] == auth()->user()->id ? ($data['status'] < 2 ? url('non-aktif/'.$data['lelang']) : '#') : '#' }}" class="btn bg-gradient-danger col-md-12"
+                                            <a href="{{$data['idadmin'] == auth()->user()->id ? ($data['status'] < 2 ? url('non-aktif/'.$data['lelang']) : '#') : '#' }}" class="btn bg-gradient-{{$data['status'] > 0 ? 'danger' : 'success'}} col-md-12"
                                                 type="button" title="Lelang ID {{$data['lelang']}}">
-                                                Non-aktifkan Lelang <i class="fas fa-ban text-lg text-white me-2" aria-hidden="true"></i>
+                                                {{$data['status'] > 0 ? 'Non-Aktifkan' : 'Aktifkan'}} Lelang <i class="fas fa-{{$data['status'] > 0 ? 'ban' : 'check-circle'}} text-lg text-white me-2" aria-hidden="true"></i>
                                             </a>
                                         </div>
                                     </div>

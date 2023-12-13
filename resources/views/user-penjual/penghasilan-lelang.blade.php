@@ -9,16 +9,18 @@
           <div class="row">
             <div class="col-8">
               <div class="numbers">
-                <p class="text-sm mb-0 text-capitalize font-weight-bold">Jumlah Lelang</p>
+                <p class="text-sm mb-0 text-capitalize font-weight-bold">Semua Lelang</p>
                 <h5 class="font-weight-bolder mb-0">
                   {{count($master)}}
-                  <span class="text-success text-sm font-weight-bolder">+55%</span>
+                  <span class="text-secondary text-sm font-weight-bolder">Lelang</span>
+                  {{-- <span class="text-success text-sm font-weight-bolder">+55%</span> --}}
                 </h5>
               </div>
             </div>
             <div class="col-4 text-end">
               <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                <i class="fas fa-store text-lg opacity-10" aria-hidden="true"></i>
+                {{-- <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i> --}}
               </div>
             </div>
           </div>
@@ -31,16 +33,19 @@
           <div class="row">
             <div class="col-8">
               <div class="numbers">
-                <p class="text-sm mb-0 text-capitalize font-weight-bold">Sedang Berjalan</p>
+                <p class="text-sm mb-0 text-capitalize font-weight-bold">Lelang yang Berjalan</p>
                 <h5 class="font-weight-bolder mb-0">
-                  2,300
-                  <span class="text-success text-sm font-weight-bolder">+3%</span>
+                    {{$berjalan}}
+                    {{-- 2,300 --}}
+                  <span class="text-secondary text-sm font-weight-bolder">Lelang</span>
+                  {{-- <span class="text-success text-sm font-weight-bolder">+3%</span> --}}
                 </h5>
               </div>
             </div>
             <div class="col-4 text-end">
-              <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
+              <div class="icon icon-shape bg-gradient-dark shadow text-center border-radius-md">
+                <i class="fas fa-hourglass-half text-lg opacity-10" aria-hidden="true"></i>
+                {{-- <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i> --}}
               </div>
             </div>
           </div>
@@ -53,16 +58,19 @@
           <div class="row">
             <div class="col-8">
               <div class="numbers">
-                <p class="text-sm mb-0 text-capitalize font-weight-bold">Penawaran Awal</p>
+                <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Penawaran Awal</p>
                 <h5 class="font-weight-bolder mb-0">
-                  +3,462
-                  <span class="text-danger text-sm font-weight-bolder">-2%</span>
+                  {{$awal}}
+                  {{-- +3,462 --}}
+                  <span class="text-secondary text-sm font-weight-bolder">Koin</span>
+                  {{-- <span class="text-danger text-sm font-weight-bolder">-2%</span> --}}
                 </h5>
               </div>
             </div>
             <div class="col-4 text-end">
-              <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
+              <div class="icon icon-shape bg-gradient-warning shadow text-center border-radius-md">
+                <i class="fas fa-coins text-lg opacity-10" aria-hidden="true"></i>
+                {{-- <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i> --}}
               </div>
             </div>
           </div>
@@ -75,16 +83,19 @@
           <div class="row">
             <div class="col-8">
               <div class="numbers">
-                <p class="text-sm mb-0 text-capitalize font-weight-bold">Laba Penawaran</p>
+                <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Keuntungan</p>
                 <h5 class="font-weight-bolder mb-0">
-                  $103,430
-                  <span class="text-success text-sm font-weight-bolder">+5%</span>
+                    {{($akhir-$awal)/100}}
+                    {{-- $103,430 --}}
+                  <span class="text-secondary text-sm font-weight-bolder">%</span>
+                  {{-- <span class="text-success text-sm font-weight-bolder">+5%</span> --}}
                 </h5>
               </div>
             </div>
             <div class="col-4 text-end">
-              <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
-                <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
+              <div class="icon icon-shape bg-gradient-success shadow text-center border-radius-md">
+                <i class="fas fa-chart-line text-lg opacity-10" aria-hidden="true"></i>
+                {{-- <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i> --}}
               </div>
             </div>
           </div>
@@ -137,7 +148,17 @@
     </div>
   </div> --}}
   <div class="row mt-4">
-    <div class="col-lg-5 mb-lg-0 mb-4">
+    {{-- <h3 id="mixed-chart-example">Mixed chart example</h3> --}}
+    <div class="col-lg-12 mb-lg-0 mb-4">
+      <div class="card mb-3">
+        <div class="card-body p-3">
+          <div class="chart">
+            <canvas id="mixed-chart" class="chart-canvas" height="375" width="683" style="display: block; box-sizing: border-box; height: 300px; width: 547.1px;"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{-- <div class="col-lg-5 mb-lg-0 mb-4">
       <div class="card z-index-2">
         <div class="card-body p-3">
           <div class="bg-gradient-dark border-radius-lg py-3 pe-1 mb-3">
@@ -268,9 +289,113 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
   </div>
   <div class="row my-4">
+    <div class="card">
+        <div class="card-header pb-0">
+          <div class="row">
+            <div class="col-lg-6 col-7">
+              <h5>Transaksi Penghasilan Lelang</h5>
+              <p class="text-sm mb-0 me-2">
+                <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
+                <span class="font-weight-bold ms-1">{{$selesai}}</span> Lelang telah Selesai
+              </p>
+              {{-- <p class="text-sm mb-0">
+                <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
+                <span class="font-weight-bold ms-1">{{$selesai}}</span> Lelang telah Selesai
+              </p> --}}
+            </div>
+          </div>
+        </div>
+        <div class="card-body px-0 pb-2">
+            <table class="table align-items-center mb-0">
+                <thead>
+                    <tr>
+                        <th class="text-capitalize text-secondary text-xs font-weight-bolder opacity-7">
+                            No.
+                        </th>
+                        <th class="col-md-2 text-center text-capitalize text-secondary text-xs font-weight-bolder opacity-7">
+                            Judul / Nama Produk
+                        </th>
+                        <th class="col-md-4 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">
+                            Koin Penawaran Awal
+                        </th>
+                        <th class="col-md-2 text-center text-capitalize text-secondary text-xs font-weight-bolder opacity-7">
+                            Jumlah Penawaran Akhir
+                        </th>
+                        <th class="col-md-2 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">
+                            Jumlah Penghasilan
+                        </th>
+                        <th class="col-md-2 text-center text-capitalize text-secondary text-xs font-weight-bolder opacity-7">
+                            Jumlah Penawar
+                        </th>
+                        <th class="text-center text-capitalize text-secondary text-xs font-weight-bolder opacity-7">
+                            Detail Lelang
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (count($master) == 0)
+                    <tr>
+                        <td class="ps-4"></td>
+                        <td class="ps-4"></td>
+                        <td class="ps-4"></td>
+                        <td class="ps-4 mb-0 text-sm text-center font-weight-bolder">Belum ada Penghasilan Lelang</td>
+                        <td class="ps-4"></td>
+                        <td class="ps-4"></td>
+                        <td class="ps-4"></td>
+                    </tr>
+                    @else
+                    @for ($i = 0; $i < count($master); $i++)
+                    <tr class="text-dark">
+                        <td class="ps-4">
+                            <p class="font-weight-bold text-sm mb-0">{{$i+1}}.</p>
+                        </td>
+                        <td class="text-center">
+                            <p class="font-weight-bold text-sm mb-0">{{$master[$i]['judul']}}</p>
+                        </td>
+                        <td class="text-center">
+                            <p class="font-weight-bold text-sm mb-0">{{$master[$i]['koin']}}</p>
+                            {{-- <p class="font-weight-bold text-sm mb-0">{{$master[$i]['mulai'].' - '}}
+                                <span class="font-weight-bolder text-sm">{{$master[$i]['selesai']}}</span>
+                            </p> --}}
+                        </td>
+                        <td class="text-center">
+                            <p class="font-weight-bold text-sm mb-0">{{($master[$i]['pemenang'])*-1}} <i class="px-1 fas fa-coins text-gradient text-warning" aria-hidden="true"></i></p>
+                        </td>
+                        <td class="text-center">
+                            <span class="font-weight-bolder text-sm mb-0">{{$master[$i]['penjual']}} <i class="px-1 fas fa-coins text-gradient text-success" aria-hidden="true"></i></span>
+                            {{-- <i class="px-1 fas {{ $master[$i]['status'] == 0 ? 'fa-ban text-danger' : 'fa-check-circle text-success'}}" aria-hidden="true"></i> --}}
+                        </td>
+                        <td class="text-center">
+                            <p class="font-weight-bold text-sm mb-0">
+                                {{$master[$i]['jumlahpenawar']}} <i class="px-1 fas fa-user-check" aria-hidden="true"></i>
+                            </p>
+                            {{-- <p class="font-weight-bold text-sm mb-0">{{$master[$i]['produk']}}</p> --}}
+                            {{-- <p class="font-weight-{{$master[$i]['admin'] == auth()->user()->id ? 'bolder' : 'bold'}} text-sm mb-0">
+                                {{$master[$i]['admin'] == auth()->user()->id ? 'Anda' : "ID ".$master[$i]['admin']}}
+                            </p> --}}
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ url('form-lelang/'.$master[$i]['id']) }}"
+                                class="{{ Request::is('form-lelang/'.$master[$i]['id']) ? 'active' : '' }}"
+                                target="_blank" type="button" title="Lihat Lelang {{$master[$i]['id']}}">
+                                <i class="fas fa-file-invoice text-lg text-dark me-2" aria-hidden="true"></i>
+                            </a>
+                            <i class="fa fa-{{$master[$i]['status'] == 3 ? 'check-circle text-success' : 'hourglass-half text-dark'}}" aria-hidden="true"></i>
+                        </td>
+                    </tr>
+                    @endfor
+                    @endif
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+  </div>
+
+  {{-- <div class="row my-4">
     <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
       <div class="card">
         <div class="card-header pb-0">
@@ -555,7 +680,7 @@
           </p>
         </div>
         <div class="card-body p-3">
-          <div class="timeline">{{-- timeline-one-side --}}
+          <div class="timeline"><!-- timeline-one-side -->
             <div class="timeline-block mb-3">
               <span class="timeline-step">
                 <i class="ni ni-bell-55 text-success text-gradient"></i>
@@ -614,143 +739,66 @@
         </div>
       </div>
     </div>
-  </div>
-
+  </div> --}}
 
 @endsection
+
 @push('dashboard')
   <script>
     window.onload = function() {
-      var ctx = document.getElementById("chart-bars").getContext("2d");
+      //untuk penawaran
+    let label = @json($label);
+    let koinawal = @json($koinawal);
+    let koinakhir = @json($koinakhir);
 
-      new Chart(ctx, {
-        type: "bar",
+      // Mixed chart
+      var ctx7 = document.getElementById("mixed-chart").getContext("2d");
+      new Chart(ctx7, {
         data: {
-          labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+          labels: label
+        //   ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+          ,
           datasets: [{
-            label: "Sales",
-            tension: 0.4,
-            borderWidth: 0,
-            borderRadius: 4,
-            borderSkipped: false,
-            backgroundColor: "#fff",
-            data: [450, 200, 800, 220, 500, 100, 400, 230, 500],
-            maxBarThickness: 6
-          },
-          {
-            label: "Sales",
-            tension: 0.4,
-            borderWidth: 0,
-            borderRadius: 4,
-            borderSkipped: false,
-            backgroundColor: "#fff",
-            data: [450, 100, 400, 230, 500, 200, 800, 220, 500],
-            maxBarThickness: 6
-          },
-          {
-            label: "Sales",
-            tension: 0.4,
-            borderWidth: 0,
-            borderRadius: 4,
-            borderSkipped: false,
-            backgroundColor: "#fff",
-            data: [450, 500, 100, 200, 800, 220, 400, 230, 500],
-            maxBarThickness: 6
-          },],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false,
-            }
-          },
-          interaction: {
-            intersect: false,
-            mode: 'index',
-          },
-          scales: {
-            y: {
-              grid: {
-                drawBorder: false,
-                display: false,
-                drawOnChartArea: false,
-                drawTicks: false,
-              },
-              ticks: {
-                suggestedMin: 0,
-                suggestedMax: 500,
-                beginAtZero: true,
-                padding: 15,
-                font: {
-                  size: 14,
-                  family: "Open Sans",
-                  style: 'normal',
-                  lineHeight: 2
-                },
-                color: "#fff"
-              },
-            },
-            x: {
-              grid: {
-                drawBorder: false,
-                display: false,
-                drawOnChartArea: false,
-                drawTicks: false
-              },
-              ticks: {
-                display: false
-              },
-            },
-          },
-        },
-      });
-
-
-      var ctx2 = document.getElementById("chart-line").getContext("2d");
-
-      var gradientStroke1 = ctx2.createLinearGradient(0, 230, 0, 50);
-
-      gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
-      gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
-      gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)'); //purple colors
-
-      var gradientStroke2 = ctx2.createLinearGradient(0, 230, 0, 50);
-
-      gradientStroke2.addColorStop(1, 'rgba(20,23,39,0.2)');
-      gradientStroke2.addColorStop(0.2, 'rgba(72,72,176,0.0)');
-      gradientStroke2.addColorStop(0, 'rgba(20,23,39,0)'); //purple colors
-
-      new Chart(ctx2, {
-        type: "line",
-        data: {
-          labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-          datasets: [{
-              label: "Mobile apps",
+              type: "bar",
+              label: "Koin Penawaran Awal",
+              weight: 5,
               tension: 0.4,
               borderWidth: 0,
-              pointRadius: 0,
-              borderColor: "#cb0c9f",
-              borderWidth: 3,
-              backgroundColor: gradientStroke1,
+              pointBackgroundColor: "#fb8c00",
+              borderColor: "#fb8c00",
+              backgroundColor: '#fb8c00',
+              borderRadius: 4,
+              borderSkipped: false,
+              data: koinawal
+            //   [50, 40, 300, 220, 500, 250, 400, 230, 500]
+              ,
+            //   maxBarThickness: 10,
               fill: true,
-              data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-              maxBarThickness: 6
-
             },
             {
-              label: "Websites",
+              type: "bar",//line
+              label: "Jumlah Penghasilan",
+              weight: 5,
               tension: 0.4,
               borderWidth: 0,
-              pointRadius: 0,
-              borderColor: "#3A416F",
-              borderWidth: 3,
-              backgroundColor: gradientStroke2,
+              pointBackgroundColor: "#4caf50",
+              borderColor: "#4caf50",
+              backgroundColor: '#4caf50',
+              borderRadius: 4,
+              borderSkipped: false,
+
+            //   tension: 0.4,
+            //   borderWidth: 0,
+            //   pointRadius: 0,
+            //   pointBackgroundColor: "#4caf50",
+            //   borderColor: "#4caf50",
+            //   borderWidth: 3,
+            //   backgroundColor: 'transparent',
+              data: koinakhir
+            //   [30, 90, 40, 140, 290, 290, 340, 230, 400]
+              ,
               fill: true,
-              data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
-              maxBarThickness: 6
-            },
+            }
           ],
         },
         options: {
@@ -789,15 +837,15 @@
             x: {
               grid: {
                 drawBorder: false,
-                display: false,
-                drawOnChartArea: false,
-                drawTicks: false,
+                display: true,
+                drawOnChartArea: true,
+                drawTicks: true,
                 borderDash: [5, 5]
               },
               ticks: {
                 display: true,
                 color: '#b2b9bf',
-                padding: 20,
+                padding: 10,
                 font: {
                   size: 11,
                   family: "Open Sans",
@@ -809,6 +857,192 @@
           },
         },
       });
+
+
+      // //chart contoh
+      // var ctx = document.getElementById("chart-bars").getContext("2d");
+      // new Chart(ctx, {
+      //   type: "bar",
+      //   data: {
+      //     labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      //     datasets: [{
+      //       label: "Sales",
+      //       tension: 0.4,
+      //       borderWidth: 0,
+      //       borderRadius: 4,
+      //       borderSkipped: false,
+      //       backgroundColor: "#fff",
+      //       data: [450, 200, 800, 220, 500, 100, 400, 230, 500],
+      //       maxBarThickness: 6
+      //     },
+      //     {
+      //       label: "Sales",
+      //       tension: 0.4,
+      //       borderWidth: 0,
+      //       borderRadius: 4,
+      //       borderSkipped: false,
+      //       backgroundColor: "#fff",
+      //       data: [450, 100, 400, 230, 500, 200, 800, 220, 500],
+      //       maxBarThickness: 6
+      //     },
+      //     {
+      //       label: "Sales",
+      //       tension: 0.4,
+      //       borderWidth: 0,
+      //       borderRadius: 4,
+      //       borderSkipped: false,
+      //       backgroundColor: "#fff",
+      //       data: [450, 500, 100, 200, 800, 220, 400, 230, 500],
+      //       maxBarThickness: 6
+      //     },],
+      //   },
+      //   options: {
+      //     responsive: true,
+      //     maintainAspectRatio: false,
+      //     plugins: {
+      //       legend: {
+      //         display: false,
+      //       }
+      //     },
+      //     interaction: {
+      //       intersect: false,
+      //       mode: 'index',
+      //     },
+      //     scales: {
+      //       y: {
+      //         grid: {
+      //           drawBorder: false,
+      //           display: false,
+      //           drawOnChartArea: false,
+      //           drawTicks: false,
+      //         },
+      //         ticks: {
+      //           suggestedMin: 0,
+      //           suggestedMax: 500,
+      //           beginAtZero: true,
+      //           padding: 15,
+      //           font: {
+      //             size: 14,
+      //             family: "Open Sans",
+      //             style: 'normal',
+      //             lineHeight: 2
+      //           },
+      //           color: "#fff"
+      //         },
+      //       },
+      //       x: {
+      //         grid: {
+      //           drawBorder: false,
+      //           display: false,
+      //           drawOnChartArea: false,
+      //           drawTicks: false
+      //         },
+      //         ticks: {
+      //           display: false
+      //         },
+      //       },
+      //     },
+      //   },
+      // });
+
+      // var ctx2 = document.getElementById("chart-line").getContext("2d");
+      // var gradientStroke1 = ctx2.createLinearGradient(0, 230, 0, 50);
+      // gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
+      // gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+      // gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)'); //purple colors
+
+      // var gradientStroke2 = ctx2.createLinearGradient(0, 230, 0, 50);
+      // gradientStroke2.addColorStop(1, 'rgba(20,23,39,0.2)');
+      // gradientStroke2.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+      // gradientStroke2.addColorStop(0, 'rgba(20,23,39,0)'); //purple colors
+
+      // new Chart(ctx2, {
+      //   type: "line",
+      //   data: {
+      //     labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      //     datasets: [{
+      //         label: "Mobile apps",
+      //         tension: 0.4,
+      //         borderWidth: 0,
+      //         pointRadius: 0,
+      //         borderColor: "#cb0c9f",
+      //         borderWidth: 3,
+      //         backgroundColor: gradientStroke1,
+      //         fill: true,
+      //         data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+      //         maxBarThickness: 6
+
+      //       },
+      //       {
+      //         label: "Websites",
+      //         tension: 0.4,
+      //         borderWidth: 0,
+      //         pointRadius: 0,
+      //         borderColor: "#3A416F",
+      //         borderWidth: 3,
+      //         backgroundColor: gradientStroke2,
+      //         fill: true,
+      //         data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
+      //         maxBarThickness: 6
+      //       },
+      //     ],
+      //   },
+      //   options: {
+      //     responsive: true,
+      //     maintainAspectRatio: false,
+      //     plugins: {
+      //       legend: {
+      //         display: false,
+      //       }
+      //     },
+      //     interaction: {
+      //       intersect: false,
+      //       mode: 'index',
+      //     },
+      //     scales: {
+      //       y: {
+      //         grid: {
+      //           drawBorder: false,
+      //           display: true,
+      //           drawOnChartArea: true,
+      //           drawTicks: false,
+      //           borderDash: [5, 5]
+      //         },
+      //         ticks: {
+      //           display: true,
+      //           padding: 10,
+      //           color: '#b2b9bf',
+      //           font: {
+      //             size: 11,
+      //             family: "Open Sans",
+      //             style: 'normal',
+      //             lineHeight: 2
+      //           },
+      //         }
+      //       },
+      //       x: {
+      //         grid: {
+      //           drawBorder: false,
+      //           display: false,
+      //           drawOnChartArea: false,
+      //           drawTicks: false,
+      //           borderDash: [5, 5]
+      //         },
+      //         ticks: {
+      //           display: true,
+      //           color: '#b2b9bf',
+      //           padding: 20,
+      //           font: {
+      //             size: 11,
+      //             family: "Open Sans",
+      //             style: 'normal',
+      //             lineHeight: 2
+      //           },
+      //         }
+      //       },
+      //     },
+      //   },
+      // });
     }
   </script>
 @endpush

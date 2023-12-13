@@ -166,19 +166,19 @@ class MasterTransaksiKoin extends Controller
         $snapToken = '';
         $id = $request->transkode;
 
-        $tgl = date('d').'-';
-        $tanggal = ( (int) date('d') );
-        $jam = ( (int) date('H') )+7;
-        if($jam >= 24) {$tanggal += 1; $jam = "0".($jam - 24);}
-        elseif($jam < 10) {$jam = "0".$jam;}
-        if($tanggal < 10) {
-            $tgl = date("Y-m")."-0".$tanggal.' '.$jam.date(':i:s');
-            // $id = 'ID'.date("Ym").'0'.$tanggal.$idtrans;
-        }
-        else if ($tanggal < 32) {
-            $tgl = date("Y-m-").$tanggal.' '.$jam.date(':i:s');
-            // $id = 'ID'.date("Ym").$tanggal.$idtrans;
-        }
+        // $tgl = date('d').'-';
+        // $tanggal = ( (int) date('d') );
+        // $jam = ( (int) date('H') )+7;
+        // if($jam >= 24) {$tanggal += 1; $jam = "0".($jam - 24);}
+        // elseif($jam < 10) {$jam = "0".$jam;}
+        // if($tanggal < 10) {
+        //     $tgl = date("Y-m")."-0".$tanggal.' '.$jam.date(':i:s');
+        //     // $id = 'ID'.date("Ym").'0'.$tanggal.$idtrans;
+        // }
+        // else if ($tanggal < 32) {
+        //     $tgl = date("Y-m-").$tanggal.' '.$jam.date(':i:s');
+        //     // $id = 'ID'.date("Ym").$tanggal.$idtrans;
+        // }
         $tgl = getTanggal();
 
         //cari data transaksi_koin

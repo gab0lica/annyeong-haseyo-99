@@ -191,7 +191,7 @@
                             @if ($filter['mulai'] == null)
                             Urut Berdasarkan Waktu Dimulai Lelang Terbaru <i class="fas fa-hourglass-start text-primary text-gradient me-1 py-1" aria-hidden="true"></i>
                             @else
-                            Filter: Status {{Str::upper($filter['status'])}} dari {{$filter['mulai']}} - {{$filter['selesai']}}
+                            Filter: Status {{Str::upper($filter['status'])}} dari {{$filter['tglmulai']}} - {{$filter['tglselesai']}}
                             @endif
                         </h5>
                     </li>
