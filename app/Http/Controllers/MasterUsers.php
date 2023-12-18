@@ -13,29 +13,31 @@ function getTanggal() {
     return date("Y-m-d H:i:s");
 }
 
-// function updateDeposito($tgl){
-//     $jumlahkoin = DB::table('transaksi_koin')
-//         ->select(DB::raw('SUM(koin * jumlah) as total_koin'))
-//         ->where('user_id','=',auth()->user()->id)
-//         ->where('status', 'Berhasil')
-//         ->first();
-//     $total = -1;
-//     if($jumlahkoin == null) $total = 0;
-//     $deposito = DB::table('deposito_koin')
-//         ->where('user_id','=',auth()->user()->id)
-//         ->update([
-//             'koin' => $total,
-//             'tanggal_update' => $tgl
-//         ]);
-//     if($deposito == 1) return $jumlahkoin->total_koin;
-// }
+function updateDeposito($tgl){
+    $jumlahkoin = DB::table('transaksi_koin')
+        ->select(DB::raw('SUM(koin * jumlah) as total_koin'))
+        ->where('user_id','=',auth()->user()->id)
+        ->where('status', 'Berhasil')
+        ->first();
+    $total = -1;
+    if($jumlahkoin == null) $total = 0;
+    $deposito = DB::table('deposito_koin')
+        ->where('user_id','=',auth()->user()->id)
+        ->update([
+            'koin' => $total,
+            'tanggal_update' => $tgl
+        ]);
+    if($deposito == 1) return $jumlahkoin->total_koin;
+}
 
 class MasterUsers extends Controller
 {
     //not yet
     //done
     public function create() {
-        if(auth()->user()->role == 1 && auth()->user()->status == 1) {return view('user-admin/user-profile');}
+        if(auth()->user()->role == 1 && auth()->user()->status == 1) {
+            return view('user-admin/user-profile',['koin' => updateDeposito(getTanggal())]);
+        }
         else {Auth::logout(); return redirect('/login');}
     }
 

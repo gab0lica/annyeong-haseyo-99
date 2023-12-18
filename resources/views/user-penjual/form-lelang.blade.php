@@ -27,6 +27,11 @@
                         <a href="{{ url('/master-lelang/semua') }}" class="btn bg-gradient-primary btn-md m-1">
                             Kembali ke Master Lelang <i class="fas fa-store text-lg text-white mx-1" aria-hidden="true"></i>
                         </a>
+                        @if ($mode != 'baru')
+                        <a href="{{ url('/form-lelang/baru') }}" class="btn bg-gradient-dark btn-md m-1">
+                            Buat Lelang Baru <i class="fas fa-plus text-lg text-white mx-1" aria-hidden="true"></i>
+                        </a>
+                        @endif
                         {{-- <p class="mb-0 font-weight-bold text-sm">
                             {{ (auth()->user()->role == 2 ? 'Penggemar (Fans)' : 'Penjual') }}
                         </p> --}}

@@ -69,12 +69,6 @@
                                     {{ $lelang['userNama'] }}
                                 </span>
                             </li>
-                            {{-- <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
-                                <span class="mb-1 text-dark text-sm">Kota</span>
-                                <span class="d-flex align-items-center text-dark text-sm font-weight-bold">
-                                    {{ $lelang['userKota'] == null ? '-' :  $lelang['userKota'] }}
-                                </span>
-                            </li> --}}
                             <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
                                 <span class="mb-1 text-dark text-sm">Nomor Telepon</span>
                                 <span class="d-flex align-items-center text-dark text-sm font-weight-bold">
@@ -99,7 +93,7 @@
                             <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
                                 <span class="mb-1 text-dark text-sm">Alamat Destinasi</span>
                                 <span class="d-flex align-items-center text-dark text-sm font-weight-bold">
-                                    {{ $lelang['alamatKirim'] }}
+                                    {{ $lelang['alamatKirim'] }}{{ $lelang['userKota'] == null ? '' :  ', '.$lelang['userKota'] }}
                                 </span>
                             </li>
                             <hr class="my-2 horizontal-dark">
@@ -116,7 +110,7 @@
                             <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
                                 <span class="mb-1 text-dark text-sm">Lokasi Destinasi (Alamat dari Penggemar)</span>
                                 <span class="d-flex align-items-center text-dark text-sm font-weight-bold">
-                                    {{ $req['tujuan'] == null ? '-' : ($req['tujuan'].', '.$req['pro-tujuan']) }} <strong class="ms-2 font-weight-bolder text-danger">({{ $lelang['alamatKirim'] }})</strong>
+                                    {{ $req['tujuan'] == null ? '-' : ($req['tujuan'].', '.$req['pro-tujuan']) }} <strong class="ms-2 font-weight-bolder text-danger">({{ $lelang['alamatKirim'] }}{{ $lelang['userKota'] == null ? '' :  ', '.$lelang['userKota'] }})</strong>
                                 </span>
                             </li>
                             @endif
@@ -155,7 +149,7 @@
                         <input type="hidden" id="idKirim" name="idKirim" value="{{$lelang['idKirim']}}">
                         <input type="hidden" id="alamatKirim" name="alamatKirim" value="{{$lelang['alamatKirim']}}">
                         <input type="hidden" id="userNama" name="userNama" value="{{$lelang['userNama']}}">
-                        {{-- <input type="hidden" id="userKota" name="userKota" value="{{$lelang['userKota']}}"> --}}
+                        <input type="hidden" id="userKota" name="userKota" value="{{$lelang['userKota']}}">
                         <input type="hidden" id="userTelepon" name="userTelepon" value="{{$lelang['userTelepon']}}">
                         <input type="hidden" id="idLelang" name="idLelang" value="{{$lelang['idLelang']}}">
                         <input type="hidden" id="produkLelang" name="produkLelang" value="{{$lelang['produkLelang']}}">
@@ -219,7 +213,7 @@
                                             <h4 class="text-capitalize">Kurir Ekspedisi</h4>
                                             <hr>
                                             <div class="form-group">
-                                                <label class="font-weight-bold text-capitalize">PROVINSI TUJUAN</label>
+                                                <label class="font-weight-bold text-capitalize">KURIR</label>
                                                 <select class="form-control kurir" name="courier">
                                                     <option value="0">Pilih Kurir</option>
                                                     <option value="jne" {{count($req) > 0 ? ($req['kurir'] == 'jne' ? 'selected' : '') : ''}}>JNE</option>
@@ -294,7 +288,7 @@
                                             Perkiraan Waktu Pengiriman (dalam Hari)
                                         </th>
                                         <th class="text-center text-uppercase text-secondary text-sm font-weight-bold opacity-7">
-                                            Pengiriman
+                                            Aksi
                                         </th>
                                     </tr>
                                 </thead>
@@ -328,7 +322,7 @@
                                                 <input type="hidden" id="idKirim" name="idKirim" value="{{$lelang['idKirim']}}">
                                                 <input type="hidden" id="alamatKirim" name="alamatKirim" value="{{$lelang['alamatKirim']}}">
                                                 <input type="hidden" id="userNama" name="userNama" value="{{$lelang['userNama']}}">
-                                                {{-- <input type="hidden" id="userKota" name="userKota" value="{{$lelang['userKota']}}"> --}}
+                                                <input type="hidden" id="userKota" name="userKota" value="{{$lelang['userKota']}}">
                                                 <input type="hidden" id="userTelepon" name="userTelepon" value="{{$lelang['userTelepon']}}">
                                                 <input type="hidden" id="idLelang" name="idLelang" value="{{$lelang['idLelang']}}">
                                                 <input type="hidden" id="produkLelang" name="produkLelang" value="{{$lelang['produkLelang']}}">
@@ -342,7 +336,7 @@
                                                 <input type="hidden" id="biaya" name="biaya" value="{{$biaya[$i]['biaya']}}">
                                                 <input type="hidden" id="hari" name="hari" value="{{$biaya[$i]['hari']}}">
                                                 <button type="submit" class="btn bg-gradient-info text-white m-0">
-                                                    Kirim Produk <i class="fas fa-truck text-white text-md ms-1" aria-hidden="true"></i>
+                                                    Pilih Pengiriman <i class="fas fa-file-invoice text-white text-lg ms-1" aria-hidden="true"></i>
                                                 </button>
                                             </form>
                                         </td>

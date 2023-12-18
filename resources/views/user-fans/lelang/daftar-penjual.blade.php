@@ -80,7 +80,8 @@
                     @for ($data = 0; $data < count($penjual); $data++)
                     <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
                         <div class="avatar me-3 w-5">
-                        <img src="{{$penjual[$data]['gambar']}}" alt="{{$penjual[$data]['nama']}}" class="border-radius-lg shadow">
+
+                        <img src="{{$penjual[$data]['gambar'] != null || $penjual[$data]['gambar'] != '' ? $penjual[$data]['gambar'] : '../pic/uni-user-1.png'}}" alt="{{$penjual[$data]['nama']}}" class="border-radius-lg shadow">
                         </div>
                         <div class="d-flex align-items-start flex-column justify-content-center">
                             <h5 class="mb-0">{{$penjual[$data]['nama']}}<i class="fas fa-address-card text-info text-gradient opacity-10 px-2"></i></h5>

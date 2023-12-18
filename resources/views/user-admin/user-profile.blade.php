@@ -28,28 +28,12 @@
                         </p> --}}
                     </div>
                 </div>
-                {{-- <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
-                    <div class="nav-wrapper position-relative end-0">
-                        <ul class="nav nav-pills nav-fill p-1 bg-transparent" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link mb-0 px-0 py-1 active " data-bs-toggle="tab" href="{{ url('/profile') }}"
-                                    role="tab" aria-controls="overview" aria-selected="true">
-                                    <span class="ms-1">{{ __('Profile') }}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link mb-0 px-0 py-1 " data-bs-toggle="tab" href="{{ url('/profile') }}" role="tab" aria-controls="teams" aria-selected="false">
-                                    <span class="ms-1">{{ __('Teams') }}</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link mb-0 px-0 py-1 " data-bs-toggle="tab" href="{{ url('/profile') }}" role="tab" aria-controls="dashboard" aria-selected="false">
-                                    <span class="ms-1">{{ __('Projects') }}</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div> --}}
+                <div class="col-auto text-end my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3 px-5"><!--col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3-->
+                    <h6 class="mb-0 text-lg font-weight-bold">
+                        <i class="fas fa-coins text-warning text-gradient text-lg p-1"></i> {{ $koin }} Koin
+                    </h6>
+                    <span class="text-sm">1 Koin = Rp 1.000,00 </span>
+                </div>
             </div>
         </div>
     </div>

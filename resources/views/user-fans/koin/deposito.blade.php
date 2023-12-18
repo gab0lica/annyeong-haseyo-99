@@ -140,17 +140,21 @@
                         <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
                             <div class="d-flex align-items-center">
                             <a href="{{ url('/transaksi-koin/'.$item->id)}}" target="_blank" class="btn btn-link btn-rounded px-1 ps-2 ms-2 mb-0 me-3 d-flex align-items-center justify-content-center
-                                {{ $item->jenis == 'beli' ? ($item->status == 'Berhasil' ? 'text-success' : 'badge bg-gradient-success') :
-                                ($item->jenis == 'tukar' ? ($item->status == 'Admin' ? 'badge bg-gradient-danger' : 'text-danger') :
-                                ($item->jenis == 'lelang' ? ($item->status == 'Berhasil' ? 'text-danger' : 'badge bg-gradient-danger') :
-                                ($item->jenis == 'lelang-penjual' ? ($item->status == 'Berhasil' ? 'text-success' : 'badge bg-gradient-success') : 'text-danger'
-                                )))}}">
+                                {{ $item->jenis == 'beli' ? ($item->status == 'Berhasil' ? 'text-success' : 'badge bg-gradient-'.($item->status == 'Gagal' ? 'dark' : 'success')) :
+                                ($item->jenis == 'tukar' ? ($item->status == 'Berhasil' ? 'text-danger' : 'badge bg-gradient-'.($item->status == 'Gagal' ? 'dark' : 'danger')) :
+                                ($item->jenis == 'lelang' ? ($item->status == 'Berhasil' ? 'text-danger' : 'badge bg-gradient-'.($item->status == 'Gagal' ? 'dark' : 'danger')) :
+                                ($item->jenis == 'lelang-penjual' ? ($item->status == 'Berhasil' ? 'text-success' : 'badge bg-gradient-'.($item->status == 'Gagal' ? 'dark' : 'success')) : 'text-danger'
+                                )))}}
+                                {{-- {{$item->status == 'Berhasil' ? ($item->jenis == 'tukar' || $item->jenis == 'lelang' ? 'text-danger' : 'text-success') :
+                                ($item->status == 'Gagal' ? 'text-dark' : 'badge bg-gradient-'.($item->jenis == 'beli' || $item->jenis == 'lelang-penjual' ? 'danger' : 'success')) }} --}}
+                                ">
                                 <i class="fas {{ $item->status == 'Berhasil' ?
                                     ($item->jenis == 'beli' || $item->jenis == 'tukar' ? 'fa-coins' :
                                     // ( ? 'fa-money-bill-wave' :
                                     ($item->jenis == 'registrasi' ? 'fa-user-check' :
                                     ($item->jenis == 'lelang' ? 'fa-file-signature' :
-                                    ($item->jenis == 'lelang-penjual' ? 'fa-file-contract' : 'fa-file-lines')))) : ($item->status == 'Gagal' ? 'fa-ban' : 'fa-hourglass-half') }} text-lg me-1"></i>
+                                    ($item->jenis == 'lelang-penjual' ? 'fa-file-contract' : 'fa-file-lines')))) :
+                                    ($item->status == 'Gagal' ? 'fa-ban' : 'fa-hourglass-half') }} text-lg me-1"></i>
                             </a>
                             <div class="d-flex flex-column">
                                 <h6 class="mb-1 text-dark text-sm">

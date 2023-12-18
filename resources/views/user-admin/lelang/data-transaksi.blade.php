@@ -77,7 +77,7 @@
                                 Jumlah Penawaran Akhir
                             </th>
                             <th class="col-md-2 text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
-                                Persentase Penghasilan
+                                Persentase Penghasilan Anda
                             </th>
                             {{-- <th class="col-md-2 text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
                                 Jumlah Penawar
@@ -118,13 +118,13 @@
                                 <p class="text-dark font-weight-bold text-sm mb-0">{{$lelang[$i]['harga']}}</p>
                             </td> --}}
                             <td class="text-center">
-                                <p class="text-dark font-weight-bold text-sm mb-0">{{($lelang[$i]['pemenang'])*-1}} <i class="px-1 fas fa-coins text-gradient text-warning" aria-hidden="true"></i></p>
+                                <p class="text-dark font-weight-bold text-sm mb-0">{{($lelang[$i]['pemenang'])}} <i class="p-1 text-lg fas fa-coins text-gradient text-warning" aria-hidden="true"></i></p>
                                 {{-- <p class="text-dark font-weight-bold text-sm mb-0">{{$lelang[$i]['mulai'].' - '}}
                                     <span class="text-success font-weight-bolder text-sm">{{$lelang[$i]['selesai']}}</span>
                                 </p> --}}
                             </td>
                             <td class="text-center">
-                                <p class="text-dark font-weight-bold text-sm mb-0">{{$lelang[$i]['persenadmin']}} <i class="px-1 fas fa-coins text-gradient text-success" aria-hidden="true"></i></p>
+                                <p class="text-dark font-weight-bold text-sm mb-0">{{$lelang[$i]['persenadmin']}} <i class="p-1 text-lg fas fa-coins text-gradient text-success" aria-hidden="true"></i></p>
                             </td>
                             <td class="text-center">
                                 <a href="{{ url('detail-lelang/'.$lelang[$i]['lelang']) }}"

@@ -32,10 +32,10 @@
                     <h6 class="mb-0 text-lg font-weight-bold">
                        <i class="fas fa-coins text-warning text-gradient text-lg me-1 py-1"></i> {{ $koinid }} Koin
                     </h6>
-                    @if($status == 'Belum')
+                    @if($status == 'Belum' || $statuskirim != 'Paket Diterima')
                     <span class="font-weight-bold text-danger text-sm">
-                        (Koin Anda belum {{ $jenis == 'lelang' ? 'dipotong dengan Jumlah Penawaran Anda' :
-                        ($jenis == 'lelang-penjual' ? 'ditambah dengan Hasil Lelang Anda' : '')}})
+                        {{ $jenis == 'lelang' && $status == 'Belum' ? '(Koin Anda belum dipotong dengan Jumlah Penawaran Anda)' :
+                        ($jenis == 'lelang-penjual' ? '(Koin Anda belum ditambah dengan Hasil Lelang Anda)' : '')}}
                     </span>
                     @endif
                 </div>
@@ -74,11 +74,12 @@
                             {{$status == 'Berhasil' ? $status :
                             ($status == 'Admin' ? 'Menunggu Konfirmasi' :
                             ($status == 'Belum' ? ( strtotime($maksimaltgl) < strtotime($hari_ini) ? 'Tidak Membayar' : 'Menunggu Pembayaran') :
-                            ($status == 'Gagal' ? 'Gagal Membayar' : '' )))}}
+                            ($status == 'Gagal' ? 'Gagal Membayar' :
+                            ($status == 'Menunggu' ? 'Menunggu Pengiriman' : $status) )))}}
                         </div>
                     </li>
                     <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
-                        <span class="mb-1 text-dark text-sm">Tanggal {{$statuskirim == null ? 'Maksimal' : ''}} Pembayaran</span>
+                        <span class="mb-1 text-dark text-sm">Tanggal {{$statuskirim == null || $statuskirim == 'Dalam Proses' || $statuskirim == 'Menunggu Pembayaran' ? 'Maksimal' : ''}} Pembayaran</span>
                         <span class="d-flex align-items-center text-dark text-sm font-weight-bold">
                         @php
                             date_default_timezone_set('Asia/Jakarta');
@@ -92,7 +93,7 @@
                     <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
                         <span class="mb-1 text-dark text-sm">Jenis Nota</span>
                         <span class="d-flex align-items-center text-dark text-sm font-weight-bold">
-                            {{$jenis == 'lelang' ? 'Lelang' :
+                            {{$jenis == 'lelang' ? 'Pemenang Lelang' :
                             ($jenis == 'lelang-penjual' ? 'Penghasilan Penjual dari Lelang' : 'None')}}
                         </span>
                     </li>
@@ -108,9 +109,24 @@
                             {{-- <b>{{$jenis == 'lelang-penjual' ? $persen.'%' : ''}}</b> --}}
                         </span>
                         <div class="d-flex align-items-center text-md text-gradient font-weight-bolder {{$jenis == 'lelang-penjual' ? 'text-success' : 'text-danger'}}">
-                            {{ $jenis == 'lelang' ? $koin*-1 : ($jenis == 'lelang-penjual' ? $koin : '') }} Koin
+                            {{ $jenis == 'lelang' ? ($koin*-1)-($pengiriman['biaya'] != null ? $pengiriman['biaya']/1000 : 0) : ($jenis == 'lelang-penjual' ? $koin-($pengiriman['biaya'] != null ? $pengiriman['biaya']/1000 : 0) : '') }} Koin
                         </div>
                     </li>
+                    @if($pengiriman['biaya'] != null)
+                    <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
+                        <span class="mb-1 text-dark text-sm">Jumlah Ongkir {{$jenis == 'lelang' ? 'yang diBayar' : ''}}</span>
+                        <span class="d-flex align-items-center text-md font-weight-bolder text-gradient text-{{$jenis == 'lelang' ? 'danger' : 'success'}}">
+                            {{$pengiriman['biaya']/1000}} Koin
+                        </span>
+                    </li>
+                    <hr class="my-2 horizontal-dark">
+                    <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
+                        <span class="mb-1 text-dark text-sm">Total {{$jenis == 'lelang' ? 'yang harus dibayar' : ''}}</span>
+                        <span class="d-flex align-items-center text-md font-weight-bolder text-gradient text-{{$jenis == 'lelang' ? 'danger' : 'success'}}">
+                            {{ $jenis == 'lelang' ? ($koin*-1) : ($jenis == 'lelang-penjual' ? $koin : '') }} Koin
+                        </span>
+                    </li>
+                    @endif
                     @if ($berhasil == true)
                     <hr class="my-2 horizontal-dark">
                     <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
@@ -125,23 +141,31 @@
                             {{ $pemenang['userTelepon'] }}
                         </span>
                     </li>
+                    {{-- {{echo $pemenang}} --}}
+                    @php
+                        // echo $statuskirim;
+                    @endphp
                     @if( $alamatkirim != null)
                     <hr class="my-2 horizontal-dark">
                     <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
                         <span class="mb-1 text-dark text-sm">Status Pengiriman</span>
                         <span class="d-flex align-items-center font-weight-bolder text-gradient text-info text-sm">
-                        {{ $jenis == 'lelang' ?
-                        ($statuskirim == null ? 'Menunggu Pembayaran' :
-                        ($statuskirim == 'Dalam Proses' || $statuskirim == 'Pengiriman' ? 'Validasi dan Pengiriman' : $statuskirim)) :
-                        ($jenis == 'lelang-penjual' ?
-                        ($statuskirim == null ? 'Menunggu Pembayaran' :
-                        ($statuskirim == 'Dalam Proses' ? 'Cek Ongkos Pengiriman' :
-                        ($statuskirim == 'Pengiriman' ? 'Proses Pengiriman' : $statuskirim)))
-                        : '') }}
+                            {{ $statuskirim == null ? 'Menunggu Pembayaran' : (
+                                $statuskirim == 'Dalam Proses' ? 'Cek Ongkos Pengiriman' : (
+                                $statuskirim == 'Menunggu Pembayaran' ? 'Menunggu Pembayaran' : (
+                                $statuskirim == 'Pengiriman' || $statuskirim == 1 ? 'Produk Dikemas' : (
+                                $statuskirim == 2 ? 'Paket Diserahkan ke Kurir Ekspedisi '.($pengiriman['kurir'] == null ? '' : $pengiriman['kurir']) : (
+                                $statuskirim == 3 ? 'Paket dalam Perjalanan' : (
+                                $statuskirim == 4 ? 'Paket Telah Sampai di Ekspedisi '.($pengiriman['kurir'] == null ? '' : $pengiriman['kurir']).' Tujuan' : (
+                                $statuskirim == 5 ? 'Paket Dikirim ke Alamat Tujuan' : (
+                                $statuskirim == 6 ? 'Paket Telah Sampai Tujuan' : (
+                                $statuskirim == 7 ? 'Paket Diterima' : $statuskirim)
+                                ))))))))
+                            }}
                         </span>
                     </li>
                     @endif
-                    @if($status != 'Belum')
+                    @if($alamatkirim != null)
                     <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
                         <span class="mb-1 text-dark text-sm">Alamat Pengiriman</span>
                         <span class="d-flex align-items-center font-weight-bolder text-gradient text-dark text-sm">
@@ -192,26 +216,23 @@
                         </span>
                     </li>
                     @endif
-                    @if($pengiriman['biaya'] != null)
-                    <hr class="my-2 horizontal-dark">
-                    <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
-                        <span class="mb-1 text-dark text-sm">Jumlah Ongkir</span>
-                        <span class="d-flex align-items-center font-weight-bolder text-gradient text-dark text-sm">
-                            Rp {{$pengiriman['biaya']}},-
-                        </span>
-                    </li>
-                    {{-- <div class="row">
-                        <span class="col-md-6 text-sm text-left text-dark m-0 mb-3">
-                            Jumlah Ongkir
-                        </span>
-                        <span class="col-md-6 text-sm text-end text-dark m-0 mb-3">
-
-                        </span>
-                    </div> --}}
-                    @endif
-                    @if($jenis == 'lelang' && $status == 'Belum' && $alamatkirim == null)
+                    @php
+                        // echo ($statuskirim == 'Pengiriman' ? 'disabled' : $statuskirim);
+                        // echo $status . " " . $jenis;//menunggu pembayaran
+                    @endphp
+                    @if($jenis == 'lelang' && ($alamatkirim == null || $statuskirim == 'Menunggu Pembayaran'))
                     {{-- <hr class="my-2 horizontal-dark"> --}}
-                    <form action={{"/bayar-lelang"}} method="POST" role="form" class="text-center">
+                    @php
+                        if($alamatkirim == null){
+                            $url = "/kirim-alamat";
+                            $keterangan = 'Kirim Alamat Pengiriman';
+                        }
+                        else {
+                            $url = "/bayar-lelang";
+                            $keterangan = 'Bayar Lelang';
+                        }
+                    @endphp
+                    <form action={{$url}} method="POST" role="form" class="text-center">
                         @csrf
                         <input type="hidden" id="lelang" name="lelang" value="{{$lelang}}">
                         <input type="hidden" id="trans" name="trans" value="{{$trans}}">
@@ -223,30 +244,31 @@
 
                         {{-- <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md"> --}}
                         <div class="column col-xl-12">
-                            @if(strtotime($hari_ini) <= strtotime($maksimaltgl) && $status == 'Belum')
+                            @if(strtotime($hari_ini) <= strtotime($maksimaltgl) && $statuskirim == null)
                             <span class="text-sm text-center text-danger m-0 mb-3">
                                 <u><strong>Pastikan Alamat Sesuai dengan Tempat Tujuan Anda dan Tidak Bisa Diganti !</strong></u> <br>
                             </span>
                             <div class="form-group px-0 my-0">
                                 <textarea id="alamat" name="alamat" type="text" class="form-control" value="{{old('alamat')}}"></textarea>
+                                {{-- onchange="cekAlamat()" --}}
                              </div>
                             @endif
                         </div>
                         {{-- </li> --}}
-                        @if($koinid+$koin < 0)
+                        @if($koinid+$koin < 0 && $statuskirim == 'Menunggu Pembayaran')
                         {{-- setelah dikurangi yang dibayar, masuk sini berarti lebih dari 0 --}}
-                            <a href="{{ url('/beli-koin') }}" target="_blank" class="btn bg-gradient-dark mx-auto">
-                                Beli Koin
-                            </a>
-                        @elseif(strtotime($hari_ini) <= strtotime($maksimaltgl) && $status == 'Belum')
+                        <div class="row">
+                            <span class="text-sm text-center text-danger m-0">
+                                <u><strong>Pastikan Deposito Koin Anda Cukup untuk Membayar Sejumlah Penawaran Anda!</strong></u> <br>
+                            </span>
+                        </div>
+                        <a href="{{ url('/beli-koin') }}" target="_blank" class="btn bg-gradient-dark mx-auto my-2">
+                            Beli Koin <i class="fas fa-money-bill text-lg ps-0 text-sm ps-2"></i>
+                        </a>
+                        @elseif(strtotime($hari_ini) <= strtotime($maksimaltgl) && ($statuskirim == 'Menunggu Pembayaran' || $alamatkirim == null))
                         {{-- bayar koin u/ pemenang --}}
-                            <div class="row">
-                                <span class="text-sm text-center text-danger m-0">
-                                    <u><strong>Pastikan Deposito Koin Anda Cukup untuk Membayar Sejumlah Penawaran Anda!</strong></u> <br>
-                                </span>
-                            </div>
+                        <button type="submit" class="btn bg-gradient-dark my-2">{{ $keterangan }}</button>
                         @endif
-                        <button type="submit" class="btn bg-gradient-dark my-2">Bayar</button>
                     </form>
                     @endif
                     @endif
@@ -254,7 +276,7 @@
                         {{-- <span class="text-sm text-center text-danger m-0">
                             {{dd($jenis,$status,$alamatkirim,strtotime($maksimaltgl),strtotime($hari_ini),strtotime($hari_ini) <= strtotime($maksimaltgl));}}
                         </span> --}}
-                        @if($jenis == 'lelang-penjual' && $alamatkirim != null)
+                        @if(($jenis == 'lelang-penjual' && $alamatkirim != null) || ($jenis == 'lelang' && $status == 'Berhasil' ))
                         <button type="button" class="col-md-3 btn bg-gradient-dark mx-auto" data-bs-toggle="modal" data-bs-target="#modalIkutLelang">
                             Pengiriman <i class="fas fa-truck ps-0 text-sm ps-2"></i>
                         </button>
@@ -267,8 +289,9 @@
                                 </div>
                                 <form action={{"/status-pengiriman"}} method="POST" role="form" class="">
                                 <div class="modal-body">
-                                      @csrf
-                                      <div class="row mx-2">
+                                    @csrf
+                                    @if($jenis == 'lelang-penjual')
+                                    <div class="row mx-2">
                                         @if ($pengiriman['biaya'] == null)
                                         <span class="text-sm text-center text-dark m-0 mb-2">
                                             <u><strong>Data Pengiriman</strong></u> <br>
@@ -276,37 +299,120 @@
                                         <a href="{{ url('/ongkir/'.$lelang) }}" target="_blank" class="col-md-7 btn bg-gradient-dark mx-auto">
                                             Cek Ongkos Pengiriman <i class="fas fa-money-bill ps-0 text-sm ps-2"></i>
                                         </a>
-                                        @endif
-                                        <span class="text-sm text-center text-dark m-0 mb-1">
-                                            <u><strong>Status Pengiriman</strong></u> <br>
-                                        </span>
+                                        @else
                                         <span class="text-sm text-center text-danger m-0 mb-2">
                                             <strong>Perhatian Status Pengiriman yang Telah Tersedia !</strong> <br>
                                         </span>
-                                        <select {{$statuskirim == 'Dalam Proses' || $statuskirim == 'Selesai' ? 'disabled' : ''}}
-                                            class="form-control text-capitalize text-center" id="status" name="status"
-                                            value="{{ $statuskirim == 'Dalam Proses' || $statuskirim == 'Selesai' ? old('kategori') : $statuskirim }}">
-                                            <option {{ $statuskirim == 'Dalam Proses' ? 'selected' : '' }}>Validasi dan Pengiriman</option>
-                                            {{-- <option {{ $statuskirim != 'Dalam Proses' && $statuskirim == "" ? 'selected' : '' }}></option> --}}
-                                            <option {{ $statuskirim != 'Dalam Proses' && $statuskirim == "Produk Dikemas dalam Paket" ? 'selected' : '' }}>Produk Dikemas dalam Paket</option>
-                                            <option {{ $statuskirim != 'Dalam Proses' && $statuskirim == "Paket Diserahkan ke Kurir Ekspedisi".($pengiriman['kurir'] == null ? '' : $pengiriman['kurir']) ? 'selected' : '' }}>Paket Diserahkan ke Kurir Ekspedisi {{$pengiriman['kurir'] == null ? '' : $pengiriman['kurir']}}</option>
-                                            <option {{ $statuskirim != 'Dalam Proses' && $statuskirim == "Paket dalam Perjalanan" ? 'selected' : '' }}>Paket dalam Perjalanan</option>
-                                            <option {{ $statuskirim != 'Dalam Proses' && $statuskirim == "Paket Telah Sampai di Ekspedisi ".($pengiriman['kurir'] == null ? '' : $pengiriman['kurir'])." Tujuan" ? 'selected' : '' }}>Paket Telah Sampai di Ekspedisi {{$pengiriman['kurir'] == null ? '' : $pengiriman['kurir']}} Tujuan</option>
-                                            <option {{ $statuskirim != 'Dalam Proses' && $statuskirim == "Paket Dikirim ke Alamat Tujuan" ? 'selected' : '' }}>Paket Dikirim ke Alamat Tujuan</option>
-                                            <option {{ $statuskirim != 'Dalam Proses' && $statuskirim == "Paket Telah Sampai Tujuan" ? 'selected' : '' }}>Paket Telah Sampai Tujuan</option>
-                                            <option {{ $statuskirim != 'Dalam Proses' && $statuskirim == "Selesai" ? 'selected' : '' }}>Paket Diterima</option>
+                                        @if($errors->any())
+                                            <div class="alert alert-danger alert-dismissible fade show text-sm" role="alert">
+                                                <span class="text-sm alert-text text-white font-weight-bold">
+                                                {{ $errors->first() }}</span>
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                                    <i class="fa fa-close" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                        @endif
+                                        <select {{$statuskirim == 'Dalam Proses' || $statuskirim == 'Menunggu Pembayaran' || ($statuskirim > 6 && $statuskirim != 'Pengiriman') ? 'disabled' : ''}}
+                                            class="form-control text-capitalize text-center" id="status" name="status">
+                                            {{-- value="{{ $statuskirim == 'Dalam Proses' || $statuskirim == 7 ? old('kategori') : $statuskirim }}" --}}
+                                            <option {{ ($statuskirim == 'Dalam Proses' ? 'selected' : ($statuskirim == 'Pengiriman' || $statuskirim > 0 ? 'disabled' : '')) }} value="-1">Cek Ongkos Pengiriman</option>
+                                            <option {{ ($statuskirim == 'Menunggu Pembayaran' ? 'selected' : ($statuskirim == 'Pengiriman' || $statuskirim > 0 ? 'disabled' : '')) }} value="-2">Menunggu Pembayaran Pengiriman</option>
+                                            <option {{ $statuskirim == 'Pengiriman' ? 'selected' : ($statuskirim > 1 ? 'disabled' : '') }} value="1">Produk Dikemas</option>
+                                            <option {{ $statuskirim == 2 ? 'selected' : ($statuskirim > 2 && $statuskirim != 'Pengiriman' ? 'disabled' : '') }} value="2">Paket Diserahkan ke Kurir Ekspedisi {{$pengiriman['kurir'] == null ? '' : $pengiriman['kurir']}}</option>
+                                            <option {{ $statuskirim == 3 ? 'selected' : ($statuskirim > 3 && $statuskirim != 'Pengiriman' ? 'disabled' : '') }} value="3">Paket dalam Perjalanan</option>
+                                            <option {{ $statuskirim == 4 ? 'selected' : ($statuskirim > 4 && $statuskirim != 'Pengiriman' ? 'disabled' : '') }} value="4">Paket Telah Sampai di Ekspedisi {{$pengiriman['kurir'] == null ? '' : $pengiriman['kurir']}} Tujuan</option>
+                                            <option {{ $statuskirim == 5 ? 'selected' : ($statuskirim > 5 && $statuskirim != 'Pengiriman' ? 'disabled' : '') }} value="5">Paket Dikirim ke Alamat Tujuan</option>
+                                            <option {{ $statuskirim == 6 ? 'selected' : ($statuskirim > 6 && $statuskirim != 'Pengiriman' ? 'disabled' : '') }} value="6">Paket Telah Sampai Tujuan</option>
+                                            {{-- <option {{ $statuskirim == 7 ? 'selected' : '' }} value="7">Paket Diterima</option> --}}
                                             {{-- @endforeach --}}
                                         </select>
-                                        <input type="hidden" id="lelang" name="lelang" value="{{$lelang}}">
-                                        <input type="hidden" id="trans" name="trans" value="{{$trans}}">
-                                      </div>
+                                        @endif
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" id='ubahStatus' name='ubahStatus' class="btn bg-gradient-dark" {{$statuskirim == 'Dalam Proses' || $statuskirim == 'Selesai' ? 'disabled' : ''}}>
-                                            Ubah Status
-                                        </button>
+                                    @endif
+                                    @if ($pengiriman['biaya'] != null)
+                                    <div class="row my-4">
+                                        <span class="text-sm text-center text-dark m-0 mb-1">
+                                            <u><strong>Status Pengiriman Saat Ini (Bertanda <span class="text-success text-gradient">Hijau</span>)</strong></u> <br>
+                                        </span>
+                                        <div class="timeline"><!-- timeline-one-side -->
+                                            <div class="timeline-block mt-4 mb-3">
+                                            <span class="timeline-step">
+                                                <i class="fas fa-box-open text-{{($statuskirim != 'Menunggu Pembayaran' && $statuskirim >= 1) || $statuskirim == 'Pengiriman' ? 'success' : 'dark'}} text-gradient"></i>
+                                            </span>
+                                            <div class="timeline-content ms-0">
+                                                <h6 class="text-dark text-sm text-end font-weight-bold mb-0">Produk Dikemas</h6>
+                                                {{-- <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">22 DEC 7:20 PM</p> --}}
+                                            </div>
+                                            </div>
+                                            <div class="timeline-block mt-4 mb-3">
+                                            <span class="timeline-step">
+                                                <i class="fas fa-landmark text-{{($statuskirim != 'Menunggu Pembayaran' && $statuskirim >= 2) && $statuskirim != 'Pengiriman' ? 'success' : 'dark'}} text-gradient"></i>
+                                            </span>
+                                            <div class="timeline-content ms-0">
+                                                <h6 class="text-dark text-sm font-weight-bold mb-0">Paket Diserahkan ke Kurir Ekspedisi {{$pengiriman['kurir'] == null ? '' : strtoupper($pengiriman['kurir'])}}</h6>
+                                                {{-- <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 11 PM</p> --}}
+                                            </div>
+                                            </div>
+                                            <div class="timeline-block mt-4 mb-3">
+                                            <span class="timeline-step">
+                                                <i class="fas fa-truck text-info text-{{($statuskirim != 'Menunggu Pembayaran' && $statuskirim >= 3) && $statuskirim != 'Pengiriman' ? 'success' : 'dark'}} text-gradient"></i>
+                                            </span>
+                                            <div class="timeline-content ms-0">
+                                                <h6 class="text-dark text-sm text-end font-weight-bold mb-0">Paket dalam Perjalanan</h6>
+                                                {{-- <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 9:34 PM</p> --}}
+                                            </div>
+                                            </div>
+                                            <div class="timeline-block mt-4 mb-3">
+                                            <span class="timeline-step">
+                                                <i class="fas fa-warehouse text-{{($statuskirim != 'Menunggu Pembayaran' && $statuskirim >= 4) && $statuskirim != 'Pengiriman' ? 'success' : 'dark'}} text-gradient"></i>
+                                            </span>
+                                            <div class="timeline-content ms-0">
+                                                <h6 class="text-dark text-sm font-weight-bold mb-0">Paket Telah Sampai di Ekspedisi {{$pengiriman['kurir'] == null ? '' : strtoupper($pengiriman['kurir'])}} Tujuan</h6>
+                                                {{-- <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">20 DEC 2:20 AM</p> --}}
+                                            </div>
+                                            </div>
+                                            <div class="timeline-block mt-4 mb-3">
+                                            <span class="timeline-step">
+                                                <i class="fas fa-map-pin text-{{($statuskirim != 'Menunggu Pembayaran' && $statuskirim >= 5) && $statuskirim != 'Pengiriman' ? 'success' : 'dark'}} text-gradient"></i>
+                                            </span>
+                                            <div class="timeline-content ms-0">
+                                                <h6 class="text-dark text-sm text-end font-weight-bold mb-0">Paket Dikirim ke Alamat Tujuan</h6>
+                                                {{-- <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">18 DEC 4:54 AM</p> --}}
+                                            </div>
+                                            </div>
+                                            <div class="timeline-block mt-4 mb-3">
+                                            <span class="timeline-step">
+                                                <i class="fas fa-house-user text-{{($statuskirim != 'Menunggu Pembayaran' && $statuskirim >= 6) && $statuskirim != 'Pengiriman' ? 'success' : 'dark'}} text-gradient"></i>
+                                            </span>
+                                            <div class="timeline-content ms-0">
+                                                <h6 class="text-dark text-sm font-weight-bold mb-0">Paket Telah Sampai Tujuan</h6>
+                                                {{-- <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">17 DEC</p> --}}
+                                            </div>
+                                            </div>
+                                            <div class="timeline-block mt-4">
+                                            <span class="timeline-step">
+                                                <i class="fas fa-handshake text-{{($statuskirim != 'Menunggu Pembayaran' && $statuskirim >= 7) && $statuskirim != 'Pengiriman' ? 'success' : 'dark'}} text-gradient"></i>
+                                            </span>
+                                            <div class="timeline-content ms-0">
+                                                <h6 class="text-dark text-sm text-end font-weight-bold mb-0">Paket Diterima</h6>
+                                                @if($jenis == 'lelang-penjual' && $statuskirim < 7)<p class="text-danger font-weight-bold text-xs text-end">Menunggu Pemenang Menerima Paket</p>@endif
+                                            </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                    @endif
+                                </div>
+                                @if(($jenis == 'lelang-penjual' && ($statuskirim < 6 || $statuskirim == 'Pengiriman')) || ($jenis == 'lelang' && $statuskirim == 6))
+                                <div class="modal-footer">
+                                    <input type="hidden" id="terima" name="terima" value="7">
+                                    <input type="hidden" id="lelang" name="lelang" value="{{$lelang}}">
+                                    <input type="hidden" id="trans" name="trans" value="{{$trans}}">
+                                    <button type="submit" id='ubahStatus' name='ubahStatus' class="btn bg-gradient-dark" {{$statuskirim == 'Dalam Proses' || $statuskirim == 'Selesai' ? 'disabled' : ''}}>
+                                        {{$jenis == 'lelang-penjual' ? 'Ubah Status' : ($statuskirim == 6 ? 'Paket Diterima' : 'Selesai')}}
+                                    </button>
+                                </div>
                                 </form>
+                                @endif
                               </div>
                             </div>
                         </div>
@@ -327,5 +433,19 @@
         </div>
     </div>
 </div>
+
 @endsection
 
+<script>
+    // function cekAlamat(e) {
+    //     console.log(e);
+    //     //ajax ambil ongkir
+    //     $.ajax({
+    //         type: 'GET',
+    //         url: "{{ url('/cek-ongkir') }}",
+    //         data: {
+
+    //         }
+    //     })
+    // }
+</script>

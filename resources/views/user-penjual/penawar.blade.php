@@ -100,10 +100,10 @@
                                     {{ str_replace($inggris,$indonesia,date('d F Y H:i:s',strtotime($penawar[$i]['tgl']))) }}
                                 </p>
                             </td>
-                            <td class="{{$tertinggi[0] == $penawar[$i]['koin'] ? 'bg-gradient-success border-radius-xl text-white' : ''}}">
+                            <td class="{{$tertinggi[0] == $penawar[$i]['koin'] && $tertinggi[1] == $penawar[$i]['nama'] ? 'bg-gradient-success border-radius-xl text-white' : ''}}">
                                 <p class="text-sm text-center font-weight-bolder mb-0">
                                     {{ $penawar[$i]['koin'] }} Koin
-                                    @if ($tertinggi[0] == $penawar[$i]['koin'])
+                                    @if ($tertinggi[0] == $penawar[$i]['koin'] && $tertinggi[1] == $penawar[$i]['nama'])
                                         <i class="fas fa-trophy text-lg text-white"></i> {{$penawar[$i]['menang'] != 0 ? $penawar[$i]['menang'] : ''}}
                                     @endif
                                 </p>

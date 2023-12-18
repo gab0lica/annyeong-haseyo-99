@@ -40,12 +40,12 @@
                     <span class="text-secondary text-sm font-weight-bolder align-bottom ps-4 text-capitalize"><u>berdasarkan waktu lelang dimulai terbaru</u></span>
                     @if(count($lelang)>0)
                     <span class="text-dark text-gradient text-sm font-weight-bolder align-bottom ps-4">
-                        <i class="fa fa-check-circle text-dark text-gradient p-1" aria-hidden="true"></i> {{count($lelang)}} aktif
+                        <i class="fa fa-check-circle text-dark text-gradient p-1" aria-hidden="true"></i> {{count($lelang)}} Aktif Berjalan
                     </span>
                     @endif
                     @if($selesai>0)
                     <span class="text-success text-gradient text-sm font-weight-bolder align-bottom ps-4">
-                        <i class="fa fa-check-circle text-success text-gradient p-1" aria-hidden="true"></i> {{$selesai}} selesai
+                        <i class="fa fa-check-circle text-success text-gradient p-1" aria-hidden="true"></i> {{$selesai}} Selesai
                     </span>
                     @endif
                     @if ($tidak > 0) <span class="text-danger text-sm font-weight-bolder align-bottom ps-4"> <i class="fa fa-ban text-danger text-gradient p-1" aria-hidden="true"></i>{{$tidak}} non-aktif</span> @endif
@@ -79,6 +79,9 @@
                                     Admin
                                 </th>
                                 <th class="text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
+                                    status
+                                </th>
+                                <th class="text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
                                     detail
                                 </th>
                             </tr>
@@ -96,7 +99,7 @@
                             </tr>
                             @else
                             @for ($i = 0; $i < count($lelang); $i++)
-                            <tr class="{{$lelang[$i]['status'] == 3 ? 'text-success' : 'text-dark'}}">
+                            <tr class="text-dark"><!-- {{$lelang[$i]['status'] == 3 ? 'text-success' : 'text-dark'}}-->
                                 <td class="ps-4">
                                     <p class="font-weight-bold text-sm mb-0">{{$i+1}}.</p>
                                 </td>
@@ -119,16 +122,18 @@
                                     </p>
                                 </td>
                                 <td class="text-center">
+                                    <a href="{{$lelang[$i]['admin'] == auth()->user()->id ? ($lelang[$i]['status'] < 2 ? url('non-aktif/'.$lelang[$i]['lelang']) : '#') : '#' }}"
+                                        class="{{ Request::is('non-aktif/'.$lelang[$i]['lelang']) ? 'active' : '' }}"
+                                        type="button" title="{{$lelang[$i]['admin'] == auth()->user()->id ? ($lelang[$i]['status'] == 1 ? 'Non-Aktifkan' : ($lelang[$i]['status'] == 0 ? 'Aktifkan' : 'Selesai')) : ''}} Lelang ID {{$lelang[$i]['lelang']}}">
+                                        <i class="fas fa-{{ $lelang[$i]['status'] < 3 ? ( $lelang[$i]['status'] == 1 ? 'ban text-danger' : 'check-circle text-success') : 'check text-success'}} text-lg me-2" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                                <td class="text-center">
                                     <a href="{{ url('detail-lelang/'.$lelang[$i]['lelang']) }}"
                                         class="{{ Request::is('detail-lelang/'.$lelang[$i]['lelang']) ? 'active' : '' }}"
                                         type="button" title="Lelang ID {{$lelang[$i]['lelang']}}">
                                         {{-- target="_blank" --}}
                                         <i class="fas fa-file-invoice text-lg text-dark me-2" aria-hidden="true"></i>
-                                    </a>
-                                    <a href="{{$lelang[$i]['admin'] == auth()->user()->id ? ($lelang[$i]['status'] < 2 ? url('non-aktif/'.$lelang[$i]['lelang']) : '#') : '#' }}"
-                                        class="{{ Request::is('non-aktif/'.$lelang[$i]['lelang']) ? 'active' : '' }}"
-                                        type="button" title="{{$lelang[$i]['admin'] == auth()->user()->id ? ($lelang[$i]['status'] == 1 ? 'Non-Aktifkan' : ($lelang[$i]['status'] == 0 ? 'Aktifkan' : 'Selesai')) : ''}} Lelang ID {{$lelang[$i]['lelang']}}">
-                                        <i class="fas fa-{{ $lelang[$i]['status'] < 3 ? ( $lelang[$i]['status'] == 1 ? 'ban text-danger' : 'check-circle text-success') : 'check text-success'}} text-lg me-2" aria-hidden="true"></i>
                                     </a>
                                 </td>
                                 {{-- @if ($user == 'penjual')

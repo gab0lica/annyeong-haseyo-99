@@ -218,14 +218,6 @@ class InfoUserController extends Controller
             return redirect('/login');
         }
 
-        // $tgl = date('d').'-';
-        // $tanggal = ( (int) date('d') );
-        // $jam = ( (int) date('H') )+7;
-        // if($jam >= 24) {$tanggal += 1; $jam = "0".($jam - 24);}
-        // elseif($jam < 10) {$jam = "0".$jam;}
-        // if($tanggal < 10) $tgl = date("Y-m")."-0".$tanggal.' '.$jam.date(':i:s');
-        // else if ($tanggal < 32) $tgl = date("Y-m-").$tanggal.' '.$jam.date(':i:s');
-
         $ubahDepo = updateDeposito(getTanggal());
         $db = DB::table('konfirmasi_penjual')
             ->join('transaksi_koin','konfirmasi_penjual.transaksi_id','=','transaksi_koin.id')
@@ -278,7 +270,7 @@ class InfoUserController extends Controller
                 $idkode = 'ID'.date('Ymd').$idtrans;
 
                 $tgl = getTanggal();
-                $count = DB::table('transaksi_koin')->count()+1;
+                // $count = DB::table('transaksi_koin')->count()+1;
                 $trans = DB::table('transaksi_koin')
                     ->insert([
                         // 'id' => $count,
@@ -291,6 +283,10 @@ class InfoUserController extends Controller
                         'status' => 'Admin',
                         'transaksi_kode' => $idkode,
                 ]);
+                if($trans == 1){
+                    $db = DB::table('transaksi_koin')->where('user_id','=',auth()->user()->id)->where('jenis','=','registrasi')->get('id');
+                    $transkoin = $db[0]->id;
+                }
             }
             // dd([$request->foto,$request->ktp,$trans]);
 
@@ -305,9 +301,9 @@ class InfoUserController extends Controller
                 ) );
                 if($konfirmasi == 1) return redirect('/penjual/registrasi')->with('success','Registrasi menjadi Penjual Berhasil. Harap Menunggu Konfirmasi Terlebih Dahulu.');
             }
-            else return redirect()->back()->with(['koin',$ubahDepo])->withErrors(['biaya' => 'Koin Anda Tidak Mencukupi.']);
+            else if($ubahDepo-20 < 0) return redirect()->back()->with(['koin',$ubahDepo])->withErrors(['biaya' => 'Koin Anda Tidak Mencukupi.']);
         } else if (count($db) == 1){//edit perbaikan registrasi
-            // dd($request);
+            // dd($gmb == null, $request->ktp, '36XXX1001223XXXX', strlen($request->ktp) != strlen("36XXX1001223XXXX") , $request->all());
             $attributes = request()->validate([
                 'ktp' => ['numeric'],
                 'foto' => ['image','between:1,10240', Rule::dimensions()->maxWidth(10000)->maxHeight(10000)]//5120*2 itu 10 MB

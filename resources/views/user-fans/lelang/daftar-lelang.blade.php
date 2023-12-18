@@ -52,6 +52,9 @@
     <div class="container-fluid text-center">
         <hr class="horizontal dark my-4">
         <h4 class="text-dark px-2 font-weight-bolder m-0">Daftar Lelang</h4>
+        <h6 class="text-dark font-weight-bold mx-auto">
+            <i class="fas fa-hourglass-half text-info text-gradient me-2 py-1" aria-hidden="true"></i><span class="col-md-5 font-weight-bold mb-2 text-md">{{count($lelang)}} Lelang sedang Berlangsung</span><br>
+        </h6>
         {{-- <span class="text-sm font-weight-bold">Lelang yang sedang Berlangsung</span>  --}}
         <button type="button" class="btn bg-gradient-primary my-2" data-bs-toggle="modal" data-bs-target="#exampleModalMessage">
             Filter Lelang <i class="fas fa-filter text-lg text-white ms-2" aria-hidden="true"></i>

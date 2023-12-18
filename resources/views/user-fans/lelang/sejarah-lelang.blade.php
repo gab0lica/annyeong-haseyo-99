@@ -54,15 +54,12 @@
         <h4 class="text-dark px-2 font-weight-bolder m-0">
             Sejarah Mengikuti Lelang
         </h4>
-        {{-- <li class="list-group-item border-0 d-flex align-items-center m-0 p-0 text-center"> --}}
-            <h6 class="text-dark font-weight-bold mx-auto">
-                {{-- <u>Status Lelang pada Penawaran Terakhir Anda</u><br> --}}
-                <i class="fas fa-coins text-dark text-gradient me-2 py-1" aria-hidden="true"></i><span class="col-md-5 font-weight-bold mb-2 text-sm">Sedang Berjalan</span> |
-                <i class="fas fa-trophy text-success text-gradient me-1" aria-hidden="true"></i> <span class="col-md-5 font-weight-bold mb-2 text-sm">Anda sebagai Pemenang</span> |
-                <i class="fas fa-coins text-danger text-gradient me-2 py-1" aria-hidden="true"></i><span class="col-md-5 font-weight-bold mb-2 text-sm">Lelang Selesai</span><br>
-            </h6>
-        {{-- </li> --}}
-        {{-- <span class="text-sm font-weight-bold">Lelang yang sedang Berlangsung</span> --}}
+        <h6 class="text-dark font-weight-bold mx-auto">
+            {{-- <u>Status Lelang pada Penawaran Terakhir Anda</u><br> --}}
+            <i class="fas fa-coins text-dark text-gradient me-2 py-1" aria-hidden="true"></i><span class="col-md-5 font-weight-bold mb-2 text-sm">Sedang Berjalan</span> |
+            <i class="fas fa-trophy text-success text-gradient me-1" aria-hidden="true"></i> <span class="col-md-5 font-weight-bold mb-2 text-sm">Anda sebagai Pemenang</span> |
+            <i class="fas fa-coins text-danger text-gradient me-2 py-1" aria-hidden="true"></i><span class="col-md-5 font-weight-bold mb-2 text-sm">Lelang Selesai</span><br>
+        </h6>
         <button type="button" class="btn bg-gradient-primary my-2" data-bs-toggle="modal" data-bs-target="#exampleModalMessage">
             Filter Lelang <i class="fas fa-filter text-lg text-white ms-2" aria-hidden="true"></i>
         </button>

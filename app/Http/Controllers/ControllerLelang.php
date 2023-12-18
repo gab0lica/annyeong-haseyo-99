@@ -72,13 +72,12 @@ function updateStatusLelang($mulai, $selesai, $lelang){
             $idtrans[2] = 'ID'.$tgltrans.$idtrans[2];
             $tgl = getTanggal();
             $usermenang = DB::table('lelang_bid')
-                // ->join('lelang','lelang_bid.lelang_id','=','lelang.id')
-                // ->join('users','lelang_bid.user_id','=','users.id')
                 ->whereRaw('lelang_id='.$lelang['id'])
                 ->selectRaw('bid_id as bidpemenang, koin_penawaran as koinpemenang,
-                    user_id as pemenang')
-                ->orderByDesc('koin_penawaran')
+                    user_id as pemenang, tanggal_bid as tanggal')
+                ->orderByRaw('koin_penawaran desc, tanggal_bid asc')
                 ->get();
+            // dd($usermenang);
             if(count($usermenang) > 0){
                 $pemenang = DB::table('transaksi_koin')->insert(
                     array(
@@ -1078,10 +1077,10 @@ artis favorit apabila data artis favorit sudah diisi di fitur profile.
     //belum buat setelah lelang berakhir (status=3) ato peringatan
     //penjual - kirim data lelang yg baru / ubah nope belum perbaikan
     public function isiLelang(Request $request) {
-        if(auth()->user()->role != 3 || auth()->user()->status == 0) {
-            Auth::logout();
-            return redirect('/login');
-        }
+        // if(auth()->user()->role != 3 || auth()->user()->status == 0) {
+        //     Auth::logout();
+        //     return redirect('/login');
+        // }
 
         $kategorinya = $request->kategori;
         $pilihartis = $request->pilihA;
@@ -1105,13 +1104,15 @@ artis favorit apabila data artis favorit sudah diisi di fitur profile.
         $gmb = auth()->user()->gambar_profile;
         if($request->hasFile('gambar')){
             $nama = 'lelang';//C:\xampp\htdocs\projectTA\public
+            $lelangid = $lelang + 1;
+            if(count($ubah) == 1) $lelangid = $request->id;
+
             $file = $request->gambar;
             $ext = $file->getClientOriginalExtension();
-            $filename = "lelang-".($lelang+1).".".$ext;
+            $filename = "lelang-".($lelangid).".".$ext;
             $file->move("C:\\xampp\htdocs\projectTA\public\\".$nama,$filename);
-
-            if(count($ubah) == 1) $gmb = $ubah[0]->gambar_produk;
             $gmb = "../".$nama."/".$filename;
+            if(count($ubah) == 1 && $gmb == $ubah[0]->gambar_produk) $gmb = $ubah[0]->gambar_produk;
         }
         else if ($request->mode == 'baru') return redirect()->back()->withErrors(['gambar' => 'Wajib mengisi Gambar Produk.']);
         else $gmb = $request->foto;
@@ -1135,6 +1136,8 @@ artis favorit apabila data artis favorit sudah diisi di fitur profile.
             if(getTanggal()>$tgl_mulai.':00' || getTanggal()>$tgl_selesai.':00') return redirect()->back()->withErrors(['mulai' => 'Tanggal Dimulai Lelang atau Tanggal Selesai Lelang harus Diisi dengan Tanggal Setelah Saat ini.']);
         }
 
+        if($kategorinya == 'Tidak Ada') return redirect()->back()->withErrors(['kategorinya' => 'Wajib memilih Kategori.']);
+
         if($request->artis != null){
             if(($request->pilihA == $request->artis)
                 || ($request->pilihA == 'Tidak Ada' && $request->artis != 'Tidak Ada')
@@ -1148,6 +1151,20 @@ artis favorit apabila data artis favorit sudah diisi di fitur profile.
         if($artis == 0 && $pilihartis != 'Tidak Ada') $artis = DB::table('artis')->insert(['nama' => $pilihartis,'status' => 1]);
 
         $admin = rand(4,13);
+
+        //admin random
+        // $jumlahnya = DB::table('lelang')
+        //     ->selectRaw('count(admin_id) as jumlah, admin_id')
+        //     // ->whereRaw('penjual_id = '.auth()->user()->id)
+        //     ->groupBy('admin_id')
+        //     ->orderByRaw('jumlah desc, admin_id asc')->get();
+        // dd($jumlahnya);
+        // $adminnya = [];
+        // $admin = 0;
+        // while($admin > 0 && $jumlahnya){
+        //     $admin = rand(4,13);
+        // }
+
         if($request->mode == 'baru'){
             DB::table('lelang')
                 ->insert([
@@ -1200,7 +1217,7 @@ artis favorit apabila data artis favorit sudah diisi di fitur profile.
             ->leftJoin('users','users.id','=','lelang_bid.user_id')
             ->whereRaw('lelang_bid.lelang_id = '.$lelang[0]->id.' and lelang_bid.status >= 1')
             ->selectRaw('lelang_bid.bid_id as id, lelang_bid.koin_penawaran as koin,
-                lelang_bid.tanggal_bid as tgl, lelang_bid.status as status,
+                lelang_bid.tanggal_bid as tgl, lelang_bid.status as status, lelang_bid.menang as menang,
                 users.id as iduser, users.nama as nama')
             ->orderBy('lelang_bid.tanggal_bid','desc')
             ->get();
@@ -1209,7 +1226,7 @@ artis favorit apabila data artis favorit sudah diisi di fitur profile.
         foreach ($dbase as $value) {
             $i = false;
             $trans = DB::table('transaksi_koin')->whereRaw("user_id = '$value->iduser' and jenis = 'lelang'")->get();
-            if($tertinggi == 0 || $value->koin > $tertinggi) {
+            if($tertinggi == 0 || $value->koin > $tertinggi || $value->menang == 1) {
                 $tertinggi = $value->koin;
                 $usertertinggi = $value->nama;
             }
@@ -1220,11 +1237,11 @@ artis favorit apabila data artis favorit sudah diisi di fitur profile.
                 'tgl'	=> $value->tgl,
                 'nama' => $value->nama,
                 'status' => $value->status,
-                'menang' => ($lelang[0]->status == 3 && count($trans) > 0 ? ' sebagai Pemenang' : 0),
+                'menang' => ($lelang[0]->status == 3 && count($trans) > 0 && $value->menang == 1 ? ' sebagai Pemenang' : 0),
             ];
         }
         $ikut = DB::table('pengikut')->whereRaw('penjual_id = '.auth()->user()->id.' and status=1')->count();
-        // dd($penawar);
+        // dd([$tertinggi,$usertertinggi]);
 
         return view('user-penjual/penawar',[
             'penawar' => $penawar,
@@ -1251,24 +1268,28 @@ artis favorit apabila data artis favorit sudah diisi di fitur profile.
         $master = [];
         $awal = DB::table('lelang')
             ->selectRaw(DB::raw('SUM(koin_minimal) as total_koin'))//, penjual_id as penjual'
-            ->whereRaw('penjual_id = '.auth()->user()->id)
+            ->whereRaw('penjual_id = '.auth()->user()->id.' and status = 3')
             // ->groupBy('penjual')
             ->first();//get
         $akhir = DB::table('lelang')
             ->join('transaksi_koin','lelang.transaksi_penjual','=','transaksi_koin.id')
-            ->select(DB::raw('SUM(transaksi_koin.koin * transaksi_koin.jumlah) as total_koin'))//, penjual_id as penjual'
+            ->select(DB::raw('SUM(transaksi_koin.koin) as total_koin'))//, penjual_id as penjual'
             ->whereRaw("lelang.penjual_id = '".auth()->user()->id."' and transaksi_koin.jenis='lelang-penjual' and transaksi_koin.status='Berhasil'")
             // ->groupBy('penjual')
             ->first();//get
 
-        // print("<strong><u>koin_minimal setiap lelang</u></strong><br>jumlah <u>awal</u>: ".$awal->total_koin."<hr>");
-        // foreach ($awal as $idx => $sum) {
-        // foreach ($sum as $k => $item) print($idx.": <u>penjual ".$sum->penjual."</u><br>");
-        // }
-        // print("<strong><u>koin_minimal setiap lelang</u></strong><br>jumlah <u>akhir</u>: ".$akhir->total_koin."<hr>");
-        // foreach ($akhir as $idx => $sum) {
-        // foreach ($sum as $k => $item) print($idx.": <u>penjual ".$sum->penjual."</u><br>");
-        // }
+        $ongkirnya = DB::table('pengiriman')
+            ->rightJoin('lelang','pengiriman.lelang_id','=','lelang.id')
+            ->select(DB::raw('SUM(biaya) as biaya'))//, penjual_id as penjual'
+            ->whereRaw("lelang.penjual_id = '".auth()->user()->id."'")
+            // ->groupBy('penjual')
+            ->first();
+        // SELECT SUM(biaya), count(lelang_id), penjual_id FROM `pengiriman` right join lelang on pengiriman.lelang_id=lelang.id group by penjual_id;
+        // dd($akhir->total_koin - $awal->total_koin - ((int)($ongkirnya->total_koin/1000)));
+        //konversi angka desimal
+        // $decimalNumber = 10.5;
+        // $integerNumber = intval($decimalNumber);
+        // echo $integerNumber; // Output: 10
 
         $label = [];
         $koinawal = [];
@@ -1276,15 +1297,11 @@ artis favorit apabila data artis favorit sudah diisi di fitur profile.
         foreach ($lelang as $i => $value) {//$i =>
             $tanggal_format = strtotime($value->tanggal_buat);
             $buat = date("d F Y H:i:s", $tanggal_format);
-            // $mulai = date("Y-m-d", strtotime($value->tanggal_mulai));
-            // $jamMulai = date("H:i", strtotime($value->tanggal_mulai));
-            // $selesai = date("Y-m-d", strtotime($value->tanggal_selesai));
-            // $jamSelesai = date("H:i", strtotime($value->tanggal_selesai));
 
             // dd($value->transaksi_pemenang);
             $pemenang = [];
             $penjual = [];
-            $admin = [];
+            $ongkir = [];
             if($value->status == 3){
                 $pemenang = DB::table('transaksi_koin')
                     ->whereRaw("jenis like '%lelang%' and id = '".$value->transaksi_pemenang."'")
@@ -1292,10 +1309,15 @@ artis favorit apabila data artis favorit sudah diisi di fitur profile.
                 $penjual = DB::table('transaksi_koin')
                     ->whereRaw("jenis like '%lelang%' and id = '".$value->transaksi_penjual."'")
                     ->selectRaw('jenis, total_bayar as lelang, koin, user_id as user, tanggal, status, transaksi_kode as kode')->get();
-                $admin = DB::table('transaksi_koin')
-                    ->whereRaw("jenis like '%lelang%' and id = '".$value->transaksi_admin."'")
-                    ->selectRaw('jenis, total_bayar as lelang, koin, user_id as user, tanggal, status, transaksi_kode as kode')->get();
+                $ongkir = DB::table('pengiriman')
+                    ->rightJoin('lelang','pengiriman.lelang_id','=','lelang.id')
+                    ->whereRaw("lelang_id = '".$value->id."'")
+                    ->selectRaw('biaya')->get();
+                // $admin = DB::table('transaksi_koin')
+                //     ->whereRaw("jenis like '%lelang%' and id = '".$value->transaksi_admin."'")
+                //     ->selectRaw('jenis, total_bayar as lelang, koin, user_id as user, tanggal, status, transaksi_kode as kode')->get();
             }
+            // dd($pemenang,$penjual,$ongkir);
             $penawar = DB::table('lelang_bid')->whereRaw('lelang_id = '.$value->id)->count();
             $statusnya = updateStatusLelang($value->tanggal_mulai, $value->tanggal_selesai,[
                 'id' => $value->id,
@@ -1325,17 +1347,21 @@ artis favorit apabila data artis favorit sudah diisi di fitur profile.
                 'buat' => $buat,
                 'status' => $value->status,
                 // 'status' => $statusnya['status'],
-                // 'pesan' => $pesan,
+                'pesan' => $pesan,
                 'pemenang' => (count($pemenang) > 0 ? $pemenang[0]->koin : 0),
-                'penjual' => (count($penjual) > 0 ? $penjual[0]->koin : 0),
-                'admin' => (count($admin) > 0 ? $admin[0]->koin : 0),
+                // 'pemenangstatus' => (count($pemenang) > 0 ? $pemenang[0]->status : "Menunggu"),
+                'penjual' => (count($penjual) > 0  ? $penjual[0]->koin : 0),
+                'penjualstatus' => (count($penjual) > 0 ? $penjual[0]->status : "Menunggu"),
+                // 'admin' => (count($admin) > 0 ? $admin[0]->koin : 0),
+                // 'adminstatus' => (count($admin) > 0 ? $admin[0]->status : "Menunggu"),
+                'ongkir' => (count($ongkir) > 0 ? (int)($ongkir[0]->biaya/1000) : 0),
                 'catatan' => $value->catatan,
                 'jumlahpenawar' => ($penawar == null ? 0 : $penawar)
             ];
 
             $label[] = "No.".($i+1);
             $koinawal[] = $value->koin_minimal;
-            $koinakhir[] = (count($penjual) > 0 ? $penjual[0]->koin : 0);
+            $koinakhir[] = (count($penjual) > 0 && count($ongkir) > 0 ? $penjual[0]->koin - ((int)($ongkir[0]->biaya/1000)) : 0);
             // foreach ($value as $key => $v) {
             //     if($key == 'nama_produk' || $key == 'koin_minimal' || $key == 'penjual_id') print($i.": <u>".$key."</u> = <strong>".$v."</strong><br>");
             //     else if($key == 'tanggal_mulai') print($i.": <u>".$key."</u> = <strong>".$v."</strong> {".$mulai." ".$jamMulai."}<br>");
@@ -1355,34 +1381,6 @@ artis favorit apabila data artis favorit sudah diisi di fitur profile.
             // }
             // print("<hr>");
         }
-        /*
-        $totalBulan = [
-                7 => ['bulan' => 'Juli' , 'total' => 0] ,
-                8 => ['bulan' => 'Agustus' , 'Dispatch' => 0, 'The Korea Times' => 0, 'Korea Herald' => 0 ] ,
-                9 => ['bulan' => 'September' , 'Dispatch' => 0, 'The Korea Times' => 0, 'Korea Herald' => 0 ] ,
-                10 => ['bulan' => 'Oktober' , 'Dispatch' => 0, 'The Korea Times' => 0, 'Korea Herald' => 0 ] ,
-                11 => ['bulan' => 'November' , 'Dispatch' => 0, 'The Korea Times' => 0, 'Korea Herald' => 0 ] ,
-                12 => ['bulan' => 'Desember' , 'Dispatch' => 0, 'The Korea Times' => 0, 'Korea Herald' => 0 ]
-            ];
-
-            $counting = 0;
-            $bulan = 7;
-            while ($counting < 6) {
-                $kalimat = "tgl_crawler like '%-07-%' and status=3";
-                if($counting == 1) $kalimat = "tgl_crawler like '%-08-%' and status=3";
-                else if($counting == 2) $kalimat = "tgl_crawler like '%-09-%' and status=3";
-                else if($counting > 2) $kalimat = "tgl_crawler like '%-".$bulan."-%' and status=3";
-                $countberita = DB::table('berita')->selectRaw('web_id, count(web_id) as web')->whereRaw($kalimat)->groupBy('web_id')->get();
-                foreach ($countberita as $key => $item) {
-                    if($key == 0) $totalBulan[$bulan]['Dispatch'] = $item->web;
-                    else if($key == 1) $totalBulan[$bulan]['The Korea Times'] = $item->web;
-                    else if($key == 2) $totalBulan[$bulan]['Korea Herald'] = $item->web;
-                }
-                // $countberita = DB::table('berita')->whereRaw($kalimat)->groupBy('web_id')->count();
-                // $countberita = DB::table('berita')->whereRaw($kalimat)->groupBy('web_id')->count();
-                $bulan += 1; $counting += 1;
-            }
-        */
 
         return view('user-penjual/penghasilan-lelang'//);
         ,[
@@ -1394,6 +1392,7 @@ artis favorit apabila data artis favorit sudah diisi di fitur profile.
             'selesai' => $selesai,
             'awal' => $awal->total_koin,
             'akhir' => $akhir->total_koin,
+            'ongkir' => ((int)($ongkirnya->biaya/1000)),
             'master' => $master,
             'label' => $label,
             'koinawal' => $koinawal,

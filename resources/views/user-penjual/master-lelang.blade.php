@@ -53,22 +53,22 @@
                             $coba = rand(0,6);//kalo sudah ada lelang, dimatikan
                         @endphp --}}
                     <div class="row">
-                        <h5 class="mb-0 py-2 text-dark text-gradient font-weight-bold col-md-6">
+                        <h5 class="text-dark text-gradient font-weight-bolder col-md-7">
                             @if(count($lelang) == 0)
                                 {{Request::is('master-lelang/semua') ? 'Lelang Belum Dibuat' : 'Tidak ada Lelang Sesuai Filter'}}
                             @else
-                                Urut Berdasarkan Tanggal Lelang Dibuat
+                                Urut Berdasarkan Tanggal Lelang Dibuat Sesuai Filter <span class="ps-3 font-weight-bolder text-dark text-gradient mb-2 text-sm">({{count($lelang)}} Lelang)</span>
                             @endif
                         </h5>
-                        <div class="row col-md-6 text-end my-1">
+                        <div class="row col-md-5 text-end my-1">
                             <div class="col-md-8">
                                 <a href="{{ url('/penghasilan-lelang') }}" class="btn bg-gradient-primary mx-auto">
-                                    Penghasilan Lelang <i class="fas fa-lg fa-chart-pie ps-2 pe-2 text-center text-white" aria-hidden="true"></i>
+                                    Penghasilan Anda <i class="fas fa-lg fa-chart-bar ps-2 pe-2 text-center text-white" aria-hidden="true"></i>
                                 </a>
                             </div>
                             <div class="col-md-4">
                                 <a href="#" class="btn bg-gradient-dark dropdown-toggle " data-bs-toggle="dropdown" id="navbarDropdownMenuLink">
-                                    {{Request::is('master-lelang/semua') ? 'Semua Penjual' :
+                                    {{Request::is('master-lelang/semua') ? 'Semua Lelang' :
                                     (Request::is('master-lelang/belum') ? 'Belum Dirilis' :
                                     (Request::is('master-lelang/berjalan') ? 'Sedang Berjalan' :
                                     (Request::is('master-lelang/selesai') ? 'Selesai' :
@@ -130,7 +130,7 @@
                                     <div class="card card-blog card-plain pb-0 p-3">
                                         <div class="position-relative">
                                             <a class="d-block shadow-xl border-radius-xl" target="" href="{{url('/form-lelang/'.$item['id'])}}" class="btn bg-gradient-info btn-sm mb-0 btn-rounded" title='Lelang'>
-                                            <img src="{{$item['gambar']}}" alt="img-blur-shadow" class="img-fluid shadow border-radius-xl">
+                                            <img src="{{$item['gambar']}}" alt="Ubah Lelang" class="img-fluid shadow border-radius-xl">
                                             </a>
                                         </div>
                                         <div class="card-body pb-0 p-3">

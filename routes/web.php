@@ -136,6 +136,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('transaksi-koin/{id}', [ControllerTransaksiKoin::class,'lihatTransaksi'])->name('lihatTransaksi');
     Route::get('transaksi-ulang/{id}', [ControllerTransaksiKoin::class,'transaksiUlang']);
     Route::post('bayar-lelang', [ControllerTransaksiKoin::class,'bayarLelang']);//lelang
+    Route::post('kirim-alamat', [ControllerTransaksiKoin::class,'kirimAlamat']);
 
     //tambahan penjual
     Route::get('penjual/{mode}', [InfoUserController::class, 'getPenjual']); //dan penggemar jadi penjual (registrasi)

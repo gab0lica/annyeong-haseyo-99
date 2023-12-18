@@ -282,7 +282,7 @@ class MasterLelang extends Controller
         $view = 'user-admin/lelang/data-'.$jenis;
         return view($view,[
             'error' => false,
-            // 'koin' => updateDeposito(getTanggal()),
+            'koin' => updateDeposito(getTanggal()),
             'pesan' => 'belum',
             'tidak' => $jumlahtidak,
             'selesai' => $jumlahselesai,
