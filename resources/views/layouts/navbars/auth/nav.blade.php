@@ -32,11 +32,12 @@
                 ( Request::is('nota-lelang/*') ? 'Nota Lelang' :
                 ( Request::is('transaksi-koin/*') ? 'Transaksi Koin' :
                 ( Request::is('deposito/*') ? 'Laporan Transaksi Koin' :
-                ( Request::is('lelang/*') || Request::is('detail-lelang/*') ? 'Laporan Lelang' :
+                ( Request::is('lelang/*') || Request::is('detail-lelang/*') || Request::is('cari-transaksi') ? 'Laporan Lelang' :
                 ( Request::is('deposito-penggemar/*') || Request::is('deposito-penjual/*') || Request::is('detail-deposito/*') ? 'Detail Deposito' :
                 ( Request::is('ongkir/*') || Request::is('ongkir') ? 'Cek Ongkos Pengiriman' :
+                ( Request::is('review-aggregator/*') ? 'Laporan Review Aggregator Konten Berita' :
                 'Berubah'
-                )))))))))))))))))))}}
+                ))))))))))))))))))))}}
             </li>
             </ol>
             <h6 class="font-weight-bolder mb-0 text-capitalize text-dark">
@@ -48,10 +49,10 @@
                 ( Request::is('halaman-berita/*') ? 'Halaman Berita yang akan Ditampilkan' :
                  //Request::is('berita-baca/*') || Request::is('detail-baca') ? 'Daftar User Membaca Berita'.(Request::is('/grafik') ? ' (Dalam Grafik)' : '') :
                 ( Request::is('*/semua') ?
-                    ( Request::is('berita/semua') || Request::is('sejarah-berita/semua') ? 'Berita dari Semua Website Korea' :
+                    ( Request::is('berita/semua') || Request::is('sejarah-berita/semua') || Request::is('review-aggregator/semua') ? 'Berita dari Semua Website Korea' :
                     ( Request::is('daftar-penjual/semua') ? 'Daftar Penjual' :
                     ( Request::is('master-lelang/*') ? 'Semua Daftar Lelang yang dibuat' : 'Semua' ))) :
-                ( Request::is('cari-*') ? 'Cari Berita' :
+                ( Request::is('cari-berita') || Request::is('cari-sejarah') ? 'Cari Berita' :
                 ( Request::is('lihat-berita/*') ? 'Membaca Berita' :
                 ( Request::is('profile/admin') ? 'Admin' :
                 ( Request::is('*/penggemar') || Request::is('deposito-penggemar/*') ? (
@@ -71,7 +72,7 @@
                 ( Request::is('nota-koin/*') || Request::is('detail-deposito/*')? 'Detail Nota' :
                 ( Request::is('transaksi-koin/*') ? 'Detail Transaksi' :
                 ( Request::is('koin/transaksi') ? 'Transaksi Koin' :
-                ( Request::is('lelang/transaksi') ? 'Transaksi Penghasilan Lelang' :
+                ( Request::is('lelang/transaksi') || Request::is('cari-transaksi') ? 'Transaksi Penghasilan Lelang' :
                 ( Request::is('lelang/daftar') ? 'Daftar Lelang' :
                 // ( Request::is('lelang/laporan') ? 'Lampiran Lelang' :
                 ( Request::is('form-lelang/baru') ? 'Buat Lelang Baru' :
@@ -80,8 +81,10 @@
                 ( Request::is('daftar-penawar/*') ? 'Daftar Semua Penawar pada Lelang' :
                 ( Request::is('ongkir/*') || Request::is('ongkir') ? 'Cek Ongkos Pengiriman' :
                 ( Request::is('detail-lelang/*') ? 'Lihat Detail Lelang' :
-                    'Berubah'
-                )))))))))))))))))))))))))))))))}}
+                ( Request::is('review-aggregator/nonaktif') ? 'Non-Aktif' :
+                ( Request::is('review-aggregator/admin') ? 'Penanggung Jawab Berita (Anda)' :
+                'Berubah'
+                )))))))))))))))))))))))))))))))))}}
             </h6>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4 d-flex justify-content-end" id="navbar">

@@ -22,7 +22,7 @@
           <div class="d-flex flex-row justify-content-between">
             {{-- <div> --}}
                 <h5 class="font-weight-bolder mb-0">
-                    Laporan Aggregator Konten Berita
+                    Laporan Aggregator Konten Berita (Setelah Review Berita)
                 @if (count($berita) > 0)
                 @if ($web != 'ktm' && $web != 'khd')
                 <span class="text-dark text-sm font-weight-bolder align-bottom ps-4">
@@ -98,6 +98,15 @@
                         </thead>
                         <tbody>
                             <!--10 ganti count($berita)-->
+                            @if (count($berita) == 0)
+                            <tr>
+                                <td class="ps-4"></td>
+                                <td class="ps-4"></td>
+                                <td class="ps-4 mb-0 text-sm text-center font-weight-bolder">Berita Tidak Tersedia Sesuai Filter</td>
+                                <td class="ps-4"></td>
+                                <td class="ps-4"></td>
+                            </tr>
+                            @else
                             @for ($i = 0; $i < count($berita); $i++)
                             <tr>
                                 <td class="text-dark ps-4">
@@ -203,6 +212,7 @@
                                 </td>
                             </tr>
                             @endfor
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -280,7 +290,7 @@
                 totalBulan[10]['Dispatch'],
                 totalBulan[11]['Dispatch'],
                 totalBulan[12]['Dispatch'],
-                0
+                totalBulan[1]['Dispatch']
             ],
             maxBarThickness: 6
           },
@@ -303,7 +313,7 @@
                 totalBulan[10]['The Korea Times'],
                 totalBulan[11]['The Korea Times'],
                 totalBulan[12]['The Korea Times'],
-                0
+                totalBulan[1]['The Korea Times']
             ],
             maxBarThickness: 6
           },
@@ -326,7 +336,7 @@
                 totalBulan[10]['Korea Herald'],
                 totalBulan[11]['Korea Herald'],
                 totalBulan[12]['Korea Herald'],
-                0
+                totalBulan[1]['Korea Herald']
             ],
             maxBarThickness: 6
           },

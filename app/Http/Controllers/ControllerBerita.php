@@ -50,23 +50,22 @@ class ControllerBerita extends Controller
         if($idweb == 0 && $web == 'semua'){
             $dbase = DB::table('berita_konten')
                 ->join('berita','berita_konten.berita_id','=','berita.berita_id')
-                ->whereRaw("berita.status = 3 and berita_konten.tgl_publikasi like '%2023%'")//status = 3 (bhs idn)
+                ->whereRaw("berita.status = 4 and (berita_konten.tgl_publikasi like '%2023%' or berita_konten.tgl_publikasi like '%2024%')")//status = 3 (bhs idn)
                 ->select(['berita.*','berita_konten.judul_idn','berita_konten.desk_idn','berita_konten.tgl_idn'])
                 ->orderBy('berita_konten.berita_id','desc')
                 ->get();
         } else {
             $dbase = DB::table('berita_konten')
                 ->join('berita','berita_konten.berita_id','=','berita.berita_id')
-                ->whereRaw("berita.web_id =".$idweb." and berita.status = 3 and berita_konten.tgl_publikasi like '%2023%'")//status = 3 (bhs idn)
-                // ->where("berita.status","=",3)//status = 3 (bhs idn)
+                ->whereRaw("berita.web_id =".$idweb." and berita.status = 4 and (berita_konten.tgl_publikasi like '%2023%' or berita_konten.tgl_publikasi like '%2024%')")//status = 3 (bhs idn)
                 ->select(['berita.*','berita_konten.judul_idn','berita_konten.desk_idn','berita_konten.tgl_idn'])
                 ->orderByRaw($orderRaw)
                 // ->orderBy('berita_konten.berita_id','desc')
                 ->get();
         }
-        $dsp = DB::table('berita')->where("web_id","=", 1)->where("status","=",3)->count();
-        $ktm = DB::table('berita')->where("web_id","=", 2)->where("status","=",3)->count();
-        $khd = DB::table('berita')->where("web_id","=", 3)->where("status","=",3)->count();
+        $dsp = DB::table('berita')->where("web_id","=", 1)->where("status","=",4)->count();
+        $ktm = DB::table('berita')->where("web_id","=", 2)->where("status","=",4)->count();
+        $khd = DB::table('berita')->where("web_id","=", 3)->where("status","=",4)->count();
         $artis = DB::table('artis')->orderBy('nama','asc')->get();
         // print("jumlah : ".count($dbase)."<hr>");
 
@@ -108,6 +107,15 @@ class ControllerBerita extends Controller
             ];
             // print($url.'<hr>');
         }
+        // dd(['web'=> $web,
+        // 'dsp'=> $dsp,
+        // 'ktm'=> $ktm,
+        // 'khd'=> $khd,
+        // 'error' => false,
+        // 'cari' => null,
+        // 'listArtis' => $artis,
+        // 'artis' => null,
+        // 'berita' => $berita]);
 
         return view('user-fans/berita/berita',[
             'web'=> $web,
@@ -116,7 +124,6 @@ class ControllerBerita extends Controller
             'khd'=> $khd,
             'error' => false,
             'cari' => null,
-            'listArtis' => $artis,
             'artis' => null,
             'berita' => $berita
             ]
@@ -147,7 +154,7 @@ class ControllerBerita extends Controller
         $berita = [];
         $countberita = DB::table('berita_konten')
             ->join('berita','berita_konten.berita_id','=','berita.berita_id')
-            ->whereRaw("berita.status = 3 and berita_konten.tgl_publikasi like '%2023%' and (".
+            ->whereRaw("berita.status = 4 and (berita_konten.tgl_publikasi like '%2023%' or berita_konten.tgl_publikasi like '%2024%') and (".
                 strtolower("berita_konten.judul_idn")." like '% ".strtolower($req->get('cari'))." %' or ".
                 strtolower("berita_konten.desk_idn")." like '% ".strtolower($req->get('cari'))." %' )")
             // ->orWhere(strtolower("berita_konten.judul_idn"),"like",'%'.strtolower($req->get('cari')).'%')
@@ -293,8 +300,7 @@ class ControllerBerita extends Controller
             'khd'=> 0,
             'error' => $error,
             'cari' => $req->get('cari'),
-            'listArtis' => $artis,
-            'artis' => $countartis,
+            'artis' => (count($countartis) > 0 ? $countartis : null),
             'berita' => $berita
             ]
         );
@@ -325,7 +331,7 @@ class ControllerBerita extends Controller
         $konten = null;
         $dbase = DB::table('berita_konten')
             ->join('berita','berita_konten.berita_id','=','berita.berita_id')
-            ->where("berita.status","=",3)//status = 3 (bhs idn)
+            ->where("berita.status","=",4)//status = 3 (bhs idn)
             ->where("berita_konten.berita_id","=",$id)
             ->select(['berita.*','berita.link as linknya','berita_konten.*'])
             ->get();
@@ -429,6 +435,7 @@ class ControllerBerita extends Controller
         else if($dbase[0]->suka == 0) $jadi = 1;
         else if($dbase[0]->suka == 1) $jadi = 0;
         $updsuka = DB::table('berita_baca')
+            ->where("user_id","=",auth()->user()->id)
             ->where("berita_id","=", $id)
             ->update( ["suka" => $jadi] );
         if($updsuka == 1) {
@@ -455,7 +462,7 @@ class ControllerBerita extends Controller
             ->join('berita','berita_baca.berita_id','=','berita.berita_id')
             ->join('berita_konten','berita.berita_id','=','berita_konten.berita_id')
             ->where("users.id","=",auth()->user()->id)
-            ->where("berita.status","=",3)
+            ->where("berita.status","=",4)
             ->select(['berita.berita_id as idnya','berita.link as linknya','berita.web_id as webnya',
                 'berita_konten.konten_id as kontennya','berita_konten.judul_idn as judulnya',
                 'berita_konten.sub_idn as subnya','berita_konten.tgl_idn as tanggalnya','berita_konten.desk_idn as deskripsine',
@@ -542,7 +549,7 @@ class ControllerBerita extends Controller
             ->join('users','berita_baca.user_id','=','users.id')
             ->join('berita','berita_baca.berita_id','=','berita.berita_id')
             ->join('berita_konten','berita.berita_id','=','berita_konten.berita_id')
-            ->where("berita.status","=",3)
+            ->where("berita.status","=",4)
             ->where("berita_konten.judul_idn","like",'% '.$req->get('cari').' %')
             ->orWhere("berita_konten.desk_idn","like",'% '.$req->get('cari').' %')
             ->orWhere("berita_konten.judul_idn","like",'%'.$req->get('cari').'%')

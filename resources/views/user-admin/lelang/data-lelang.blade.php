@@ -23,7 +23,8 @@
     <div class="col-12">
         <div class="alert alert-dark mx-4" role="alert">
             <span class="text-white">
-                <strong>{{$pesan}}</strong>
+                <strong>{{$errors->first()}}</strong>
+                {{-- <strong>{{$pesan}}</strong> --}}
             </span>
         </div>
     </div>
@@ -34,27 +35,27 @@
       <div class="card mb-2">
         <div class="card-header pb-0">
           <div class="d-flex flex-row justify-content-between">
-            <div class="col-md-9">
+            <div class="col-md-12">
                 <h5 class="font-weight-bolder mb-0">
                     Daftar Lelang
                     <span class="text-secondary text-sm font-weight-bolder align-bottom ps-4 text-capitalize"><u>berdasarkan waktu lelang dimulai terbaru</u></span>
                     @if(count($lelang)>0)
                     <span class="text-dark text-gradient text-sm font-weight-bolder align-bottom ps-4">
-                        <i class="fa fa-check-circle text-dark text-gradient p-1" aria-hidden="true"></i> {{count($lelang)}} Aktif Berjalan
+                        <i class="fa fa-check-circle text-dark text-gradient p-1" aria-hidden="true"></i> {{count($lelang)}} Lelang Aktif
                     </span>
                     @endif
                     @if($selesai>0)
                     <span class="text-success text-gradient text-sm font-weight-bolder align-bottom ps-4">
-                        <i class="fa fa-check-circle text-success text-gradient p-1" aria-hidden="true"></i> {{$selesai}} Selesai
+                        <i class="fa fa-check-circle text-success text-gradient p-1" aria-hidden="true"></i> {{$selesai}} Lelang Selesai
                     </span>
                     @endif
                     @if ($tidak > 0) <span class="text-danger text-sm font-weight-bolder align-bottom ps-4"> <i class="fa fa-ban text-danger text-gradient p-1" aria-hidden="true"></i>{{$tidak}} non-aktif</span> @endif
                 </h5>
             </div>
-            <a href="{{ url('/lelang/transaksi') }}"
+            {{-- <a href="{{ url('/lelang/transaksi') }}"
                 class="btn bg-gradient-secondary font-weight-bolder text-white btn-sm mb-0" type="button">
                 Transaksi Lelang Anda<i class="fas fa-file-invoice text-white mx-1 text-sm" aria-hidden="true"></i>
-            </a>
+            </a> --}}
           </div>
         </div>
 {{-- dari user-management --}}
@@ -66,22 +67,22 @@
                                 <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
                                     No.
                                 </th>
-                                <th class="col-md-2 text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
+                                <th class="col-md-1 text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
                                     username penjual
                                 </th>
-                                <th class="col-md-4 text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
-                                    jangka waktu berlangsung
+                                <th class="col-md-3 text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
+                                    nama produk
+                                </th>
+                                <th class="col-md-3 text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
+                                    durasi lelang
                                 </th>
                                 <th class="col-md-2 text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
                                     jumlah penawar
                                 </th>
-                                <th class="col-md-2 text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
+                                {{-- <th class="col-md-2 text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
                                     Admin
-                                </th>
-                                <th class="text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
-                                    status
-                                </th>
-                                <th class="text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
+                                </th> --}}
+                                <th class="col-md-3 text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">
                                     detail
                                 </th>
                             </tr>
@@ -107,34 +108,40 @@
                                     <p class="font-weight-bold text-sm mb-0">{{$lelang[$i]['username']}}</p>
                                 </td>
                                 <td class="text-center">
+                                    <p class="font-weight-bold text-sm mb-0">{{$lelang[$i]['produk']}}</p>
+                                </td>
+                                <td class="text-center">
                                     <p class="font-weight-bold text-sm mb-0">{{$lelang[$i]['mulai'].' - '}}
                                         <span class="font-weight-bolder text-sm">{{$lelang[$i]['selesai']}}</span>
                                     </p>
                                 </td>
                                 <td class="text-center">
-                                    <span class="font-weight-bolder text-sm mb-0">{{$lelang[$i]['ikut']}}</span>
-                                    {{-- <i class="px-1 fas {{ $lelang[$i]['status'] == 0 ? 'fa-ban text-danger' : 'fa-check-circle text-success'}}" aria-hidden="true"></i> --}}
+                                    <span class="font-weight-bold text-sm mb-0">{{$lelang[$i]['ikut']}}</span>
+                                    <i class="px-1 fas fa-users text-dark" aria-hidden="true"></i>
                                 </td>
-                                <td class="text-center">
-                                    {{-- <p class="font-weight-bold text-sm mb-0">{{$lelang[$i]['produk']}}</p> --}}
+                                {{-- <td class="text-center">
                                     <p class="font-weight-{{$lelang[$i]['admin'] == auth()->user()->id ? 'bolder' : 'bold'}} text-sm mb-0">
-                                        {{$lelang[$i]['admin'] == auth()->user()->id ? 'Anda' : "ID ".$lelang[$i]['admin']}}
+                                        Admin {{$lelang[$i]['admin'] == auth()->user()->id ? 'Anda' : "ID ".$lelang[$i]['admin']}}
                                     </p>
-                                </td>
+                                </td> --}}
                                 <td class="text-center">
                                     <a href="{{$lelang[$i]['admin'] == auth()->user()->id ? ($lelang[$i]['status'] < 2 ? url('non-aktif/'.$lelang[$i]['lelang']) : '#') : '#' }}"
-                                        class="{{ Request::is('non-aktif/'.$lelang[$i]['lelang']) ? 'active' : '' }}"
-                                        type="button" title="{{$lelang[$i]['admin'] == auth()->user()->id ? ($lelang[$i]['status'] == 1 ? 'Non-Aktifkan' : ($lelang[$i]['status'] == 0 ? 'Aktifkan' : 'Selesai')) : ''}} Lelang ID {{$lelang[$i]['lelang']}}">
-                                        <i class="fas fa-{{ $lelang[$i]['status'] < 3 ? ( $lelang[$i]['status'] == 1 ? 'ban text-danger' : 'check-circle text-success') : 'check text-success'}} text-lg me-2" aria-hidden="true"></i>
+                                        {{-- class="{{ Request::is('non-aktif/'.$lelang[$i]['lelang']) ? 'active' : '' }}" --}}
+                                        type="button"
+                                        title="{{$lelang[$i]['admin'] == auth()->user()->id ? ($lelang[$i]['status'] == 1 ? 'Non-Aktifkan' : ($lelang[$i]['status'] == 0 ? 'Aktifkan' : 'Selesai')) : ($lelang[$i]['status'] == 0 ? 'Non-Aktif' : ($lelang[$i]['status'] == 3 ? 'Selesai' : 'Sedang Berjalan'))}} Lelang ID {{$lelang[$i]['lelang']}}">
+                                        <i class="fas fa-{{ $lelang[$i]['status'] < 3 ? ($lelang[$i]['admin'] == auth()->user()->id ? ($lelang[$i]['status'] == 1 ? 'ban text-danger' : 'check-circle text-success') : 'hourglass-half text-dark') : ($lelang[$i]['admin'] == auth()->user()->id ? 'check text-success' : 'check-circle text-success')}} text-lg me-2" aria-hidden="true"></i>
                                     </a>
-                                </td>
-                                <td class="text-center">
+                                {{-- </td>
+                                <td class="text-center"> --}}
                                     <a href="{{ url('detail-lelang/'.$lelang[$i]['lelang']) }}"
                                         class="{{ Request::is('detail-lelang/'.$lelang[$i]['lelang']) ? 'active' : '' }}"
+                                        target="_blank"
                                         type="button" title="Lelang ID {{$lelang[$i]['lelang']}}">
-                                        {{-- target="_blank" --}}
                                         <i class="fas fa-file-invoice text-lg text-dark me-2" aria-hidden="true"></i>
                                     </a>
+                                    <span class="font-weight-{{$lelang[$i]['admin'] == auth()->user()->id ? 'bolder' : 'bold'}} text-sm mb-0">
+                                        {{$lelang[$i]['admin'] == auth()->user()->id ? 'Anda' : "Admin ID ".$lelang[$i]['admin']}}
+                                    </span>
                                 </td>
                                 {{-- @if ($user == 'penjual')
                                 <td class="text-center">

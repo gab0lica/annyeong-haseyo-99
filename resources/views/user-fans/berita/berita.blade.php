@@ -13,10 +13,10 @@
               <span class="ms-1 {{$web == 'dsp' ? 'font-weight-bolder badge badge-pill badge-md bg-gradient-dark' : ''}}"> Dispatch </span> <p class="text-ms badge badge-pill badge-md bg-gradient-info ms-1 my-0"> {{$dsp}} </p>
               <span class="ms-1 {{$web == 'ktm' ? 'font-weight-bolder badge badge-pill badge-md bg-gradient-dark' : ''}}"> The Korea Times </span> <p class="text-ms badge badge-pill badge-md bg-gradient-success ms-1 my-0"> {{$ktm}} </p>
               <span class="ms-1 {{$web == 'khd' ? 'font-weight-bolder badge badge-pill badge-md bg-gradient-dark' : ''}}"> Korea Herald </span> <p class="text-ms badge badge-pill badge-md bg-gradient-secondary ms-1 my-0"> {{$khd}} </p>
-              <i class="fas fa-check-circle text-gradient text-primary ms-2 py-1" aria-hidden="true"></i> <span class="font-weight-bold">{{count($berita) < 100 ? count($berita) : '100 berita dimunculkan'}}</span>
+              <i class="fas fa-check-circle text-gradient text-primary ms-2 py-1" aria-hidden="true"></i> <span class="font-weight-bold">{{count($berita) < 100 ? count($berita) : '100'}} berita dimunculkan</span>
             @else
             <i class="fas fa-check-circle text-gradient text-primary ms-2 py-1" aria-hidden="true"></i> <span class="font-weight-bolder">{{count($berita) < 100 ? count($berita).' berita dimunculkan' : '100 berita dimunculkan, sisa '.(count($berita)-100).' berita lainnya' }} </span> <span class=""> yang berkaitan dengan {{ "'".$cari."' " }}</span>
-            @if (count($artis) > 0)
+            @if ($artis != null)
             <span class="">dan Artis {{auth()->user()->artis == strtolower($cari) ? 'Favorit' : ''}}</span>
             @foreach($artis as $key)<span class="font-weight-bolder me-2"><i class="fas fa-users text-gradient text-primary ms-2 py-1" aria-hidden="true"></i> {{ $key->nama.' ' }}</span>@endforeach
             @endif

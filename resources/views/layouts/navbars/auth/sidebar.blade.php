@@ -135,14 +135,14 @@
             <span class="nav-link-text ms-1 {{ (Request::is('berita-aggregator/*') ? 'text-white text-uppercase font-weight-bolder' : 'text-dark') }}">Laporan Aggregator</span>
         </a>
       </li>
-      {{-- <li class="nav-item {{ (Request::is('berita-baca/*') ? 'bg-gradient-secondary' : '') }}">
-        <a class="nav-link" href="{{ url('berita-baca/laporan') }}"> <!--/dsp-->
+      <li class="nav-item {{ (Request::is('review-aggregator/*') ? 'bg-gradient-secondary' : '') }}">
+        <a class="nav-link" href="{{ url('review-aggregator/semua') }}"> <!--/dsp-->
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                 <i style="font-size: 1rem;" class="fab fa-lg fa-readme ps-2 pe-2 text-center text-dark" ></i>
             </div>
-            <span class="nav-link-text ms-1 {{ (Request::is('berita-baca/*') ? 'text-white text-uppercase font-weight-bolder' : 'text-dark') }}">Laporan Baca Berita</span>
+            <span class="nav-link-text ms-1 {{ (Request::is('review-aggregator/*') ? 'text-white text-uppercase font-weight-bolder' : 'text-dark') }}">Laporan Review</span>
         </a>
-      </li> --}}
+      </li>
       <hr>
       <li class="nav-item mt-2">
         <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Laporan Daftar User</h6>
@@ -219,14 +219,14 @@
             <span class="nav-link-text ms-1 {{ (Request::is('lelang/daftar') ? 'text-white text-uppercase font-weight-bolder' : 'text-dark') }}">Daftar Lelang</span>
         </a>
       </li>
-      {{-- <li class="nav-item {{ (Request::is('lelang/laporan') ? 'bg-gradient-secondary' : '') }}">
-        <a class="nav-link" href="{{ url('lelang/laporan') }}">
+      <li class="nav-item {{ (Request::is('lelang/transaksi') ? 'bg-gradient-secondary' : '') }}">
+        <a class="nav-link" href="{{ url('lelang/transaksi') }}">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                <i style="font-size: 1rem;" class="fas fa-lg fa-file-invoice ps-2 pe-2 text-center text-dark" aria-hidden="true"></i>
+                <i style="font-size: 1rem;" class="fas fa-lg fa-folder-open ps-2 pe-2 text-center text-dark" aria-hidden="true"></i>
             </div>
-            <span class="nav-link-text ms-1 {{ (Request::is('lelang/laporan') ? 'text-white text-uppercase font-weight-bolder' : 'text-dark') }}">Lampiran Lelang</span>
+            <span class="nav-link-text ms-1 {{ (Request::is('lelang/transaksi') ? 'text-white text-uppercase font-weight-bolder' : 'text-dark') }}">Transaksi Lelang</span>
         </a>
-      </li> --}}
+      </li>
 @else
     <li class="nav-item mt-2">
       <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Berita</h6>

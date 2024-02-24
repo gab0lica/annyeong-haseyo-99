@@ -94,7 +94,7 @@
                             </td>
                             <td class="text-center m-0 p-0">
                                 <span class="text-sm font-weight-bolder mb-0">
-                                    <i class="text-lg fas fa-user text-dark text-gradient py-2 pe-1 ps-3"></i> {{$berita[$i]['baca']}}
+                                    <i class="text-lg fas fa-eye text-dark text-gradient py-2 pe-1 ps-3"></i> {{$berita[$i]['baca']}}
                                 </span>
                                 <span class="text-sm font-weight-bolder mb-0">
                                     <i class="text-lg fas fa-thumbs-up text-danger text-gradient py-2 pe-1 ps-3"></i> {{$berita[$i]['suka']}}

@@ -19,8 +19,8 @@ function updateDeposito($tgl){
         ->where('user_id','=',auth()->user()->id)
         ->where('status', 'Berhasil')
         ->first();
-    $total = -1;
-    if($jumlahkoin == null) $total = 0;
+    $total = 0;
+    if($jumlahkoin->total_koin != null) $total = $jumlahkoin->total_koin;
     $deposito = DB::table('deposito_koin')
         ->where('user_id','=',auth()->user()->id)
         ->update([

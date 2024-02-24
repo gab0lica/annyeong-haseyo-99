@@ -152,7 +152,8 @@
                                 <h6 class="mx-2 font-weight-bolder {{ $pesan == 'peringatan' && $detail['status'] == 2 ? 'text-danger' : 'text-secondary'}} text-capitalize">
                                     {{ $pesan == 'peringatan' && $detail['status'] == 2 ? 'Perbaikan' :
                                         ($detail['status'] == 1 ?
-                                            ($pesan == 'belum-penawar' ? 'Dianggap Perbaikan Karena Lelang Selesai Tanpa Penawar' : 'Sedang Berjalan') :
+                                            ($pesan == 'belum-penawar' ? 'Dianggap Perbaikan Karena Lelang Selesai Tanpa Penawar' :
+                                            ($pesan == 'satu-penawar' ? 'Dianggap Perbaikan Karena Lelang Selesai Kurang dari Dua Penawar' : 'Sedang Berjalan')) :
                                         ($detail['status'] == -1 ? 'Belum Dirilis' :
                                         ($detail['status'] == 3 ? 'Lelang Selesai' : 'Non-Aktif'))) }}
                                 </h6>

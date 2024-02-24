@@ -39,8 +39,13 @@
                     </h6>
                     @else --}}
                     <h6 class="mb-0 text-lg font-weight-bold">
-                        <i class="fas fa-check text-success opacity-10 px-2"></i> {{ $ikutlelang }} Lelang yang Diikuti
-                        {{-- @if($koin <= 0 && $pesan != 'penggemar')<span class="font-weight-bold text-danger text-sm">(Anda harus Membeli Koin untuk Registrasi)</span>@endif --}}
+                        <i class="fas fa-{{ Request::is('daftar-penjual/ikuti') ? 'users' : 'check'}} text-gradient text-success opacity-10 px-2"></i>
+                        @if(Request::is('daftar-penjual/ikuti'))
+                        {{ count($penjual) }} Penjual
+                        @else
+                        {{ $ikutlelang }} Lelang
+                        @endif
+                         yang Diikuti
                     </h6>
                     {{-- @endif --}}
                 </div>
@@ -64,16 +69,14 @@
     </div>
 
     <div class="container-fluid py-3">
-        <div class="row">
-            <div class="card h-100">
-                {{-- <div class="card-header pb-0 p-3">
-                </div> --}}
-                <div class="card-body p-3">
+        <div class="card h-100">
+            <div class="card-body p-3">
+                <div class="row mx-1">
                 <ul class="list-group">
                     @if(count($penjual) == 0)
                     <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
                         <h5 class="text-secondary font-weight-bold mx-auto">
-                            Anda Belum Mengikuti Penjual
+                            {{Request::is('daftar-penjual/ikuti') ? 'Anda Belum Mengikuti Penjual' : 'Tidak Ada Penjual'}}
                         </h5>
                     </li>
                     @else

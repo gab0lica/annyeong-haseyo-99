@@ -26,7 +26,7 @@
                     ( $konten['web'] == 3 ? 'Korea Herald' : 'Berita' ))}} <i class="fab fa-readme opacity-10 ps-2"></i>
                 </a>
 
-                <a href="{{ url('/suka-berita/1/'.$konten['id']) }}" class="btn {{ $suka == 1 ? 'btn-outline-danger' : ($suka == 0 ? 'btn-outline-dark' : 'bg-gradient-dark')}}">
+                <a href="#" class="btn {{ $suka == 1 ? 'btn-outline-danger' : ($suka == 0 ? 'btn-outline-dark' : 'bg-gradient-dark')}}">
                     <i class="fas {{ $suka == 1 ? 'text-danger fa-thumbs-up': ($suka == 0 ? 'text-black fa-thumbs-down' : 'text-white fa-thumbs-up') }} text-sm"></i>
                 </a>
                 {{-- <a class="page-link btn bg-gradient-secondary btn-sm mb-0 text-light {{ (Request::is('berita/') ? 'active' : '') }}"

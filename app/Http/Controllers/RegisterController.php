@@ -67,7 +67,11 @@ class RegisterController extends Controller
         // else if ($tanggal < 32) $tgl = date("Y-m-").$tanggal.' '.$jam.date(':i:s');
 
         $akunBaru = DB::table('users')->where('username','=',$attributes['username'])->get('id');
-        if(count($akunBaru) == 1){
+        $koin = DB::table('deposito_koin')
+            ->join('users', 'users.id', '=', 'deposito_koin.user_id')
+            ->whereRaw("users.id = $akunBaru[0]->id")
+            ->get();
+        if(count($akunBaru) == 1 && count($koin) == 0){
             $koin = DB::table('deposito_koin')
             ->insert([
                 'koin' => 0,

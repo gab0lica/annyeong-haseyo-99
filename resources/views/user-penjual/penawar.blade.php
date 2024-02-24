@@ -104,7 +104,7 @@
                                 <p class="text-sm text-center font-weight-bolder mb-0">
                                     {{ $penawar[$i]['koin'] }} Koin
                                     @if ($tertinggi[0] == $penawar[$i]['koin'] && $tertinggi[1] == $penawar[$i]['nama'])
-                                        <i class="fas fa-trophy text-lg text-white"></i> {{$penawar[$i]['menang'] != 0 ? $penawar[$i]['menang'] : ''}}
+                                        <i class="fas fa-trophy text-lg text-white"></i> {{$penawar[$i]['menang'] != null ? $penawar[$i]['menang'] : ''}}
                                     @endif
                                 </p>
                             </td>

@@ -61,7 +61,7 @@
                               <i class="fas fa-file-invoice ps-0 text-sm px-2"></i> Lihat Transaksi Lelang
                           </a>
                           @endif
-                          @if ($data['status'] == 1 && count($data['userikut']) == 0)
+                          @if ($data['status'] == 1 && $data['mode'] == 'berjalan' && count($data['userikut']) == 0)
                           <button type="button" class="btn bg-gradient-dark btn-md mb-0" data-bs-toggle="modal" data-bs-target="#modalIkutLelang">
                           <i class="fas fa-money-check ps-0 text-sm px-2"></i>Ikut Penawaran
                           </button>
@@ -141,10 +141,10 @@
                                     </button>
                                 </div>
                             @endif
-                            @php
+                            {{-- @php
                                 $inggris = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                                 $indonesia = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-                            @endphp
+                            @endphp --}}
                             <li class="list-group-item border-0 d-flex justify-content-between px-2 mb-2 border-radius-lg">
                                 {{-- @if ($i == 0)
                                 <span class="mask bg-gradient- border-radius-xl opacity-8"></span>
@@ -238,7 +238,8 @@
                             <h5 class="mb-0 text-md font-weight-bolder">
                                 <span class="mb-0 text-sm font-weight-bold">Selamat </span> {{ $data['pemenang']['nama'] == auth()->user()->nama ? 'Anda' : $data['pemenang']['nama']}}
                                  <span class="mb-0 text-sm font-weight-bold">Menang dengan Penawaran</span>
-                                {{ ($data['pemenang']['koin'])*-1 }} <span class="mb-0 text-sm font-weight-bold"> Koin</span>
+                                {{ ($data['pemenang']['koin'])*-1 }} <span class="mb-0 text-sm font-weight-bold"> Koin, dilakukan pada Tanggal </span>
+                                {{ str_replace($inggris,$indonesia,date('d F Y H:i:s',strtotime($data['pemenang']['tanggal']))) }}
                             </h5>
                             {{-- @endforeach --}}
                           @else

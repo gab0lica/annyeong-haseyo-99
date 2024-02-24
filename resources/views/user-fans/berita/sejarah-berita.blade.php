@@ -55,7 +55,7 @@
             @if (count($history) == 0)
                   <div class="col-12">
                       <div class="alert alert-dark mx-4" role="alert">
-                            <h6 class="mb-0 text-l text-center text-white">Tidak ada Data Terbaru</h6>
+                            <h6 class="mb-0 text-l text-center text-white">Tidak ada Berita yang Dibaca</h6>
                       </div>
                   </div>
             @else

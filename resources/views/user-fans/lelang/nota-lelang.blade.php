@@ -32,7 +32,7 @@
                     <h6 class="mb-0 text-lg font-weight-bold">
                        <i class="fas fa-coins text-warning text-gradient text-lg me-1 py-1"></i> {{ $koinid }} Koin
                     </h6>
-                    @if($status == 'Belum' || $statuskirim != 'Paket Diterima')
+                    @if($status != 'Berhasil' && $statuskirim != 'Paket Diterima')
                     <span class="font-weight-bold text-danger text-sm">
                         {{ $jenis == 'lelang' && $status == 'Belum' ? '(Koin Anda belum dipotong dengan Jumlah Penawaran Anda)' :
                         ($jenis == 'lelang-penjual' ? '(Koin Anda belum ditambah dengan Hasil Lelang Anda)' : '')}}
@@ -164,8 +164,8 @@
                             }}
                         </span>
                     </li>
-                    @endif
-                    @if($alamatkirim != null)
+                    {{-- @endif
+                    @if($alamatkirim != null) --}}
                     <li class="list-group-item border-0 d-flex justify-content-between p-0 mb-2 border-radius-md">
                         <span class="mb-1 text-dark text-sm">Alamat Pengiriman</span>
                         <span class="d-flex align-items-center font-weight-bolder text-gradient text-dark text-sm">
@@ -277,15 +277,15 @@
                             {{dd($jenis,$status,$alamatkirim,strtotime($maksimaltgl),strtotime($hari_ini),strtotime($hari_ini) <= strtotime($maksimaltgl));}}
                         </span> --}}
                         @if(($jenis == 'lelang-penjual' && $alamatkirim != null) || ($jenis == 'lelang' && $status == 'Berhasil' ))
-                        <button type="button" class="col-md-3 btn bg-gradient-dark mx-auto" data-bs-toggle="modal" data-bs-target="#modalIkutLelang">
+                        <button type="button" class="col-md-3 btn bg-gradient-dark mx-auto" data-bs-toggle="modal" data-bs-target="#modalTracking">
                             Pengiriman <i class="fas fa-truck ps-0 text-sm ps-2"></i>
                         </button>
                         <!-- Modal -->
-                        <div class="modal fade" id="modalIkutLelang" tabindex="-1" role="dialog" aria-labelledby="modalIkutLelangMessageTitle" aria-hidden="true">
+                        <div class="modal fade" id="modalTracking" tabindex="-1" role="dialog" aria-labelledby="modalTrackingMessageTitle" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered" role="document">
                               <div class="modal-content">
                                 <div class="modal-header">
-                                  <h5 class="modal-title" id="modalIkutLelangLabel">Pengiriman Produk</h5>
+                                  <h5 class="modal-title" id="modalTrackingLabel">Pengiriman Produk</h5>
                                 </div>
                                 <form action={{"/status-pengiriman"}} method="POST" role="form" class="">
                                 <div class="modal-body">

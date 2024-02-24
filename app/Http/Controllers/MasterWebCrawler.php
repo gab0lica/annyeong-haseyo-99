@@ -347,7 +347,7 @@ class MasterWebCrawler extends Controller
         $webnya = "and web_id = ".$idweb; //dispatch
         if($web == 'ktm') $idweb = 2; //koreatimes
         else if($web == 'khd') $idweb = 3; //koreaherald
-        if($web != 'dsp') $webnya = "and web_id = ".$idweb." and link like '%2023%'";
+        if($web != 'dsp') $webnya = "and web_id = ".$idweb." and (link like '%2023%' or link like '%2024%')";
 
         $berita = [];
         $dbase = DB::table('berita')
@@ -387,7 +387,7 @@ class MasterWebCrawler extends Controller
         }
         $idn = DB::table('berita')
             ->join('berita_konten','berita_konten.berita_id','=','berita.berita_id')
-            ->whereRaw("berita.web_id = '$idweb' and berita.status = 3 and berita_konten.tgl_publikasi like '%2023%'")
+            ->whereRaw("berita.web_id = '$idweb' and berita.status = 3 and (berita_konten.tgl_publikasi like '%2023%' or berita.tgl_crawler like '%2024%')")
             // ->where("admin_id","=",auth()->user()->id)
             ->count();
 
@@ -552,18 +552,14 @@ class MasterWebCrawler extends Controller
         if($web == 'ktm'){//koreatimes
             $idweb = 2;
             $dbase = DB::table('berita')
-                ->where('web_id','=',$idweb)
-                ->where('status','=',2)
-                ->where('link','like', '%2023%')
+                ->whereRaw("web_id = ".$idweb." and status = 2 and (link like '%2023%' or link like '%2024%')")
                 ->orderBy('berita_id','desc')
                 // ->where("admin_id","=",auth()->user()->id)
                 ->get(['berita_id','link','status']);
         } else if($web == 'khd') {//koreaherald
             $idweb = 3;
             $dbase = DB::table('berita')
-                ->where('web_id','=',$idweb)
-                ->where('status','=',1)
-                ->where('link','like','%2023%')
+                ->whereRaw("web_id = ".$idweb." and status = 1 and (link like '%2023%' or link like '%2024%')")
                 ->orderBy('berita_id','desc')
                 // ->where("admin_id","=",auth()->user()->id)
                 ->get(['berita_id','link','status']);
@@ -1123,17 +1119,17 @@ class MasterWebCrawler extends Controller
 
         $dsp = DB::table('berita')
             ->join('berita_konten','berita_konten.berita_id','=','berita.berita_id')
-            ->whereRaw("berita.web_id = 1 and berita.status = 3 and berita_konten.tgl_publikasi like '%2023%'")
+            ->whereRaw("berita.web_id = 1 and berita.status = 4 and (berita_konten.tgl_publikasi like '%2023%' or berita.tgl_crawler like '%2024%')")
             // ->where("admin_id","=",auth()->user()->id)
             ->count();
         $ktm = DB::table('berita')
             ->join('berita_konten','berita_konten.berita_id','=','berita.berita_id')
-            ->whereRaw("berita.web_id = 2 and berita.status = 3 and berita_konten.tgl_publikasi like '%2023%'")
+            ->whereRaw("berita.web_id = 2 and berita.status = 4 and (berita_konten.tgl_publikasi like '%2023%' or berita.tgl_crawler like '%2024%')")
             // ->where("admin_id","=",auth()->user()->id)
             ->count();
         $khd = DB::table('berita')
             ->join('berita_konten','berita_konten.berita_id','=','berita.berita_id')
-            ->whereRaw("berita.web_id = 3 and berita.status = 3 and berita_konten.tgl_publikasi like '%2023%'")
+            ->whereRaw("berita.web_id = 3 and berita.status = 4 and (berita_konten.tgl_publikasi like '%2023%' or berita.tgl_crawler like '%2024%')")
             // ->where("admin_id","=",auth()->user()->id)
             ->count();
         $idweb = 1; //dispatch
@@ -1147,7 +1143,7 @@ class MasterWebCrawler extends Controller
         if($web == 'semua' || $web == 'grafik'){
             $dbase = DB::table('berita_konten')
                 ->join('berita','berita_konten.berita_id','=','berita.berita_id')
-                ->whereRaw("berita.status = 3 and berita_konten.tgl_publikasi like '%2023%'")//status = 3 (bhs idn)
+                ->whereRaw("berita.status = 4 and (berita_konten.tgl_publikasi like '%2023%' or berita.tgl_crawler like '%2024%')")//status = 3 (bhs idn)
                 // ->where("berita.admin_id","=",auth()->user()->id)
                 ->selectRaw('berita.web_id as web, berita.level as level, berita.tgl_crawler as tgl,
                 count(berita.berita_id) as berita')
@@ -1158,7 +1154,7 @@ class MasterWebCrawler extends Controller
         } else {
             $dbase = DB::table('berita_konten')
                 ->join('berita','berita_konten.berita_id','=','berita.berita_id')
-                ->whereRaw("berita.web_id =".$idweb." and berita.status = 3 and berita_konten.tgl_publikasi like '%2023%'")//status = 3 (bhs idn)
+                ->whereRaw("berita.web_id =".$idweb." and berita.status = 4 and (berita_konten.tgl_publikasi like '%2023%' or berita.tgl_crawler like '%2024%')")//status = 3 (bhs idn)
                 // ->where("berita.admin_id","=",auth()->user()->id)
                 ->selectRaw('berita.web_id as web, berita.level as level, berita.tgl_crawler as tgl,
                 count(berita.berita_id) as berita')
@@ -1169,7 +1165,7 @@ class MasterWebCrawler extends Controller
         }
 
         if($web == 'grafik'){
-            $countberita = DB::table('berita')->whereRaw("status=3")->groupBy('tgl_crawler');
+            $countberita = DB::table('berita')->whereRaw("status=4")->groupBy('tgl_crawler');
             // $totalBulan['07']['total'] = $countberita;
 
             // $totalBulan = [];
@@ -1179,25 +1175,33 @@ class MasterWebCrawler extends Controller
                 9 => ['bulan' => 'September' , 'Dispatch' => 0, 'The Korea Times' => 0, 'Korea Herald' => 0 ] ,
                 10 => ['bulan' => 'Oktober' , 'Dispatch' => 0, 'The Korea Times' => 0, 'Korea Herald' => 0 ] ,
                 11 => ['bulan' => 'November' , 'Dispatch' => 0, 'The Korea Times' => 0, 'Korea Herald' => 0 ] ,
-                12 => ['bulan' => 'Desember' , 'Dispatch' => 0, 'The Korea Times' => 0, 'Korea Herald' => 0 ]
+                12 => ['bulan' => 'Desember' , 'Dispatch' => 0, 'The Korea Times' => 0, 'Korea Herald' => 0 ] ,
+                1 => ['bulan' => '2024' , 'Dispatch' => 0, 'The Korea Times' => 0, 'Korea Herald' => 0 ]
             ];
 
             $counting = 0;
             $bulan = 7;
             while ($counting < 6) {
-                $kalimat = "tgl_crawler like '%-07-%' and status=3";
-                if($counting == 1) $kalimat = "tgl_crawler like '%-08-%' and status=3";
-                else if($counting == 2) $kalimat = "tgl_crawler like '%-09-%' and status=3";
-                else if($counting > 2) $kalimat = "tgl_crawler like '%-".$bulan."-%' and status=3";
+                $kalimat = "tgl_crawler like '%-07-%' and status=4";
+                if($counting == 1) $kalimat = "tgl_crawler like '%-08-%' and status=4";
+                else if($counting == 2) $kalimat = "tgl_crawler like '%-09-%' and status=4";
+                else if($counting > 2) $kalimat = "tgl_crawler like '%-".$bulan."-%' and status=4";
                 $countberita = DB::table('berita')->selectRaw('web_id, count(web_id) as web')->whereRaw($kalimat)->groupBy('web_id')->get();
-                foreach ($countberita as $key => $item) {
-                    if($key == 0) $totalBulan[$bulan]['Dispatch'] = $item->web;
-                    else if($key == 1) $totalBulan[$bulan]['The Korea Times'] = $item->web;
-                    else if($key == 2) $totalBulan[$bulan]['Korea Herald'] = $item->web;
+                foreach ($countberita as $item) {
+                    if($item->web_id == 1) $totalBulan[$bulan]['Dispatch'] = $item->web;
+                    else if($item->web_id == 2) $totalBulan[$bulan]['The Korea Times'] = $item->web;
+                    else if($item->web_id == 3) $totalBulan[$bulan]['Korea Herald'] = $item->web;
                 }
                 // $countberita = DB::table('berita')->whereRaw($kalimat)->groupBy('web_id')->count();
                 // $countberita = DB::table('berita')->whereRaw($kalimat)->groupBy('web_id')->count();
                 $bulan += 1; $counting += 1;
+            }
+            $countberita = DB::table('berita')->selectRaw('web_id, count(web_id) as web')
+                ->whereRaw("tgl_crawler like '%2024%' and status=4")->groupBy('web_id')->get();
+            foreach ($countberita as $item) {
+                if($item->web_id == 1) $totalBulan[1]['Dispatch'] = $item->web;
+                else if($item->web_id == 2) $totalBulan[1]['The Korea Times'] = $item->web;
+                else if($item->web_id == 3) $totalBulan[1]['Korea Herald'] = $item->web;
             }
         } else {
             // print(count($dbase));
@@ -1228,6 +1232,8 @@ class MasterWebCrawler extends Controller
         //     print('<br>');
         // }
 
+        // dd($totalBulan);
+
         return view('user-admin/crawlering/berita-aggregator',[
             'web'=> $web,
             'dsp'=> $dsp,
@@ -1255,7 +1261,7 @@ class MasterWebCrawler extends Controller
         $linknya = DB::table('berita')
             ->join('berita_konten','berita_konten.berita_id','=','berita.berita_id')
             ->leftJoin('berita_baca','berita_baca.berita_id','=','berita.berita_id')
-            ->whereRaw("berita.web_id = '$req->web' and berita.level = '$req->level' and berita.tgl_crawler = '$tgl_crawler' and berita.status = 3")
+            ->whereRaw("berita.web_id = '$req->web' and berita.level = '$req->level' and berita.tgl_crawler = '$tgl_crawler' and berita.status = 4")
             ->selectRaw('berita.berita_id as id, berita.link as link,
                 berita.admin_id as berita_admin, berita_konten.admin_id as konten_admin,
                 berita_konten.konten_id as konten, count(berita_baca.tanggal_baca) as userbaca')
@@ -1321,12 +1327,13 @@ class MasterWebCrawler extends Controller
         $dbase = DB::table('berita_konten')
             ->join('berita','berita_konten.berita_id','=','berita.berita_id')
             ->where("berita_konten.berita_id","=",$id)
-            ->select(['berita.*','berita.link as linknya','berita_konten.*'])
+            ->selectRaw('berita.web_id, berita.berita_id, berita.status, berita.web_id,
+                berita.link as linknya, berita.admin_id as berita_admin, berita_konten.*')
             ->get();
-        if(count($dbase) == 0) {
-            $ubahstatus = DB::table('berita')->whereRaw("berita_id = ".$id)->update(['status' => 1]);
-            if($ubahstatus) return redirect()->route('aggregator',['web' => 'semua']);
-        }
+        // if(count($dbase) == 0) {
+        //     $ubahstatus = DB::table('berita')->whereRaw("berita_id = ".$id)->update(['status' => 1]);
+        //     if($ubahstatus) return redirect()->route('aggregator',['web' => 'semua']);
+        // }
 
         foreach ($dbase as $value) {
             $cleaned = $value->desk_idn;
@@ -1336,19 +1343,19 @@ class MasterWebCrawler extends Controller
                 $width = str_replace('style="width:100%', 'style="width:50%;"',$center);
                 $cleaned = str_replace('gambarnya','gambarnya h-50',$width);
             } else if($value->web_id == '2'){//koreatimes
-                $gambar         = "img_arti img_a2";
+                $gambar  = "img_arti img_a2";
                 $jadigmb = str_replace('gambarnya','gambar',$cleaned);
                 $gmb = str_replace($gambar,'gambarnya',$jadigmb);
-                $caption        = "img_txt";
+                $caption = "img_txt";
                 $cleaned = str_replace($caption,'captionnya',$gmb);
 
             } else if($value->web_id == '3'){//koreaherald
-                $gambar         = "img_box";
+                $gambar = "img_box";
                 $jadigmb = str_replace('gambarnya','gambar',$cleaned);
                 $gmb = str_replace($gambar,'gambarnya h-50',$jadigmb);
-                $caption        = "img_caption";
+                $caption = "img_caption";
                 $cap = str_replace($caption,'captionnya',$gmb);
-                $deskripsi      = "text_box";
+                $deskripsi = "text_box";
                 $des = str_replace('deskripsinya','deskripsi',$cap);
                 $cleaned = str_replace($deskripsi,'deskripsinya',$des);
             }
@@ -1361,6 +1368,8 @@ class MasterWebCrawler extends Controller
                 'status' => $value->status,
                 'web' => $value->web_id,
                 'konten' => $value->konten_id,
+                'berita_admin' => $value->berita_admin,
+                'konten_admin' => $value->admin_id,
                 'idn'=>[
                     'judul' => $value->judul_idn,
                     'sub' => $value->sub_idn,
@@ -1399,7 +1408,7 @@ class MasterWebCrawler extends Controller
         ]);
     }
 
-    //5 ubah status jadi 0 ato 1
+    //5 ubah status jadi -1
     public function ubahLink($id){
         if(auth()->user()->role != 1 || auth()->user()->status == 0) {
             Auth::logout();
@@ -1414,5 +1423,175 @@ class MasterWebCrawler extends Controller
 
         if($nonaktifkan) return redirect()->route('lihatHalaman',['id' => $id]);
         else return redirect()->route('aggregator',['web' => 'semua']);
+    }
+
+//catatan revisi
+/*
+2. Sesuaikan fitur program dengan alur yang direncanakan di buku.
+Di buku alurnya berita diseleksi dulu oleh admin sebelum ditambahkan di halaman utama.
+*/
+
+    // -a tambahkan fitur untuk menandai berita mana saja yang belum direview
+    //6 buka halaman cek berita u/ berita yang belum dicek/direview
+    public function reviewBerita($web) {
+        if(auth()->user()->role != 1 || auth()->user()->status == 0) {
+            Auth::logout();
+            return redirect('/login');
+        }
+        set_time_limit(1800);
+
+        $jumlahLink = 0;
+        $berita = [];
+        $idweb = 1; //dispatch
+        if ($web == 'dsp') { $ktm = 0; $khd = 0;}
+        else if($web == 'ktm') {$idweb = 2; $dsp = 0; $khd = 0;} //koreatimes
+        else if($web == 'khd') {$idweb = 3; $dsp = 0; $ktm = 0;} //koreaherald
+
+        $statusnya = "berita.status = 3 and ";
+        $where = '';
+        if($web == 'nonaktif'){
+            $statusnya = "berita.status = -1 and ";//status 0 waktu web crawler, status -1 dinonaktifkan
+        }
+        if($web == 'admin'){
+            $where = "(berita.admin_id =".auth()->user()->id." or berita_konten.admin_id =".auth()->user()->id.") and ";
+        }
+        else if($web != 'semua' && $web != 'nonaktif'){
+            $where = "berita.web_id =".$idweb." and ";
+        }
+
+        $dsp = DB::table('berita')
+            ->join('berita_konten','berita_konten.berita_id','=','berita.berita_id')
+            ->whereRaw("berita.web_id = 1 and ".$where.$statusnya." (berita_konten.tgl_publikasi like '%2023%' or berita.tgl_crawler like '%2024%')")//(berita.tgl_crawler like '%2023-12-%' or berita.tgl_crawler like '%2024-01-%')")
+            // ->where("admin_id","=",auth()->user()->id)
+            ->count();
+        $ktm = DB::table('berita')
+            ->join('berita_konten','berita_konten.berita_id','=','berita.berita_id')
+            ->whereRaw("berita.web_id = 2 and ".$where.$statusnya." (berita_konten.tgl_publikasi like '%2023%' or berita.tgl_crawler like '%2024%')")//(berita.tgl_crawler like '%2023-12-%' or berita.tgl_crawler like '%2024-01-%')")
+            // ->where("admin_id","=",auth()->user()->id)
+            ->count();
+        $khd = DB::table('berita')
+            ->join('berita_konten','berita_konten.berita_id','=','berita.berita_id')
+            ->whereRaw("berita.web_id = 3 and ".$where.$statusnya." (berita_konten.tgl_publikasi like '%2023%' or berita.tgl_crawler like '%2024%')")//(berita.tgl_crawler like '%2023-12-%' or berita.tgl_crawler like '%2024-01-%')")
+            // ->where("admin_id","=",auth()->user()->id)
+            ->count();
+
+        $dbase = DB::table('berita_konten')
+            ->join('berita','berita_konten.berita_id','=','berita.berita_id')
+            ->whereRaw($where.$statusnya."(berita_konten.tgl_publikasi like '%2023%' or berita.tgl_crawler like '%2024%')")//"(berita.tgl_crawler like '%2023-12-%' or berita.tgl_crawler like '%2024-01-%')")
+            //status = 3 (bhs idn), berita.admin_id = auth()->user()->id, berita_konten.tgl_publikasi like '%2023%'
+            ->selectRaw('berita.web_id as web, berita.level as level, berita.tgl_crawler as tgl, berita.status as statusnya,
+                berita.berita_id as id, berita.link as link,
+                berita.admin_id as berita_admin, berita_konten.admin_id as konten_admin,
+                berita_konten.konten_id as konten')//count(berita.berita_id) as berita
+            // ->groupByRaw('berita.web_id, berita.level, berita.tgl_crawler')//berita.admin_id, berita_konten.admin_id
+            ->orderBy('berita.berita_id','desc')
+            ->get();
+        // $dbase = DB::table('berita')
+        //     ->join('berita_konten','berita_konten.berita_id','=','berita.berita_id')
+        //     // ->leftJoin('berita_baca','berita_baca.berita_id','=','berita.berita_id')
+        //     ->whereRaw("berita.status = 3 and berita_konten.tgl_publikasi like '%2023%'")
+        //     ->selectRaw('berita.web_id as web, berita.level as level, berita.tgl_crawler as tgl,
+        //         berita.berita_id as id, berita.link as link,
+        //         berita.admin_id as berita_admin, berita_konten.admin_id as konten_admin,
+        //         berita_konten.konten_id as konten')//, count(berita_baca.tanggal_baca) as userbaca
+        //     // ->groupByRaw('web, level, tgl, link, id, berita_admin, konten_admin, konten')
+        //     ->orderBy('berita.berita_id','desc')
+        //     ->get();
+
+        // dd($web, count($dbase), $dsp, $ktm, $khd, $jumlahLink == ($dsp+$ktm+$khd) );
+        foreach ($dbase as $value) {
+            $bulanInggris = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            $bulanIndonesia = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+            $tanggal_format = strtotime($value->tgl);
+            $tgl_crawler = str_replace($bulanInggris, $bulanIndonesia, date("d F Y H:i:s", $tanggal_format));
+
+            $where = "berita.berita_id = '$value->id'";
+            $bacanya = $suka = DB::table('berita_baca')
+                ->join('berita','berita_baca.berita_id','=','berita.berita_id')
+                ->whereRaw($where)
+                // ->groupBy('berita_baca.suka')
+                ->count();
+            $suka = DB::table('berita_baca')
+                ->join('berita','berita_baca.berita_id','=','berita.berita_id')
+                ->whereRaw("berita_baca.suka = 1 and ".$where)
+                ->groupBy('berita_baca.suka')
+                ->count();
+            $tidaksuka = DB::table('berita_baca')
+                ->join('berita','berita_baca.berita_id','=','berita.berita_id')
+                ->whereRaw("berita_baca.suka = -1 and ".$where)
+                ->groupBy('berita_baca.suka')
+                ->count();
+            $belum = DB::table('berita_baca')
+                    ->join('berita','berita_baca.berita_id','=','berita.berita_id')
+                    ->whereRaw("berita_baca.suka = 0 and ".$where)
+                    ->groupBy('berita_baca.suka')
+                    ->count();
+
+            $berita[] = [
+                'web' => $value->web,
+                'level' => $value->level,
+                'tanggal' => $tgl_crawler,
+                'status' => $value->statusnya,
+                // 'jumlah' => $value->berita,
+                'id' => $value->id,
+                'link' => $value->link,
+                'berita_admin' => $value->berita_admin,
+                'konten_admin' => $value->konten_admin,
+                'konten' => $value->konten,
+                'baca' => $bacanya,//$value->userbaca,
+                'suka' => $suka,
+                'tidaksuka' => $tidaksuka,
+                'belum' => $belum,
+            ];
+
+            $jumlahLink += 1;//$value->berita;
+        }
+
+        $pesan = ["salah",$jumlahLink];
+        if( $jumlahLink == ($dsp+$ktm+$khd) ) $pesan = ["benar",$jumlahLink];
+
+        return view('user-admin/crawlering/review-aggregator',[
+            'web'=> $web,
+            'dsp'=> $dsp,
+            'ktm'=> $ktm,
+            'khd'=> $khd,
+            'pesan' => $pesan,
+            'berita' => $berita
+        ]);
+    }
+
+    // -a tambahkan fitur untuk menandai berita mana saja yang belum direview
+    //6a ubah status jadi 4, menjadi siap ditayangkan
+    public function tayangkanBerita($id){
+        if(auth()->user()->role != 1 || auth()->user()->status == 0) {
+            Auth::logout();
+            return redirect('/login');
+        }
+
+        //info: sebenernya bisa dijadikan 1 dg func ubahLink
+        $siaptayang = DB::table('berita')->whereRaw("berita_id = ".$id)->update(['status' => 4]);
+
+        if($siaptayang == 1) return redirect()->route('lihatHalaman',['id' => $id]);
+        else return redirect()->route('lihatHalaman',['id' => $id]);
+    }
+
+    // -b tambahkan fitur preview artikel di halaman yang sama dengan halaman daftar berita yang belum direview untuk membantu mempercepat proses review berita
+    //7 preview halaman berita yang sudah dicek/direview
+    public function previewBerita($web) {
+        if(auth()->user()->role != 1 || auth()->user()->status == 0) {
+            Auth::logout();
+            return redirect('/login');
+        }
+
+        $idweb = 1;
+        if($web == 'ktm') $idweb = 2;
+        else if($web == 'khd') $idweb = 3;
+
+        $id = 0;
+        $idnya = DB::table('berita')->whereRaw("status = 4 and web_id = ".$idweb)->get(['berita_id']);
+        if(count($idnya) > 0) $id = $idnya[0]->berita_id;
+
+        if($id == 0) return redirect()->route('review',['web' => $web]);
+        return redirect()->route('lihatHalaman',['id' => $id]);
     }
 }

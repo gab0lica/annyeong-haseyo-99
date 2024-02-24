@@ -93,11 +93,20 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('detail-aggregator', [MasterWebCrawler::class,'detailAggregator']);
     Route::get('halaman-berita/{id}',[MasterWebCrawler::class,'lihatHalaman'])->name('lihatHalaman');
     Route::get('status-link/{id}', [MasterWebCrawler::class,'ubahLink']);
+    // tambahan catatan sidang berita
+    Route::get('review-aggregator/{web}', [MasterWebCrawler::class,'reviewBerita'])->name('review');
+    Route::get('preview-berita/{web}', [MasterWebCrawler::class,'previewBerita'])->name('preview');
+    Route::get('tayangkan/{id}', [MasterWebCrawler::class,'tayangkanBerita']);
+    // end tambahan catatan sidang berita
     Route::get('user/{user}', [MasterUsers::class,'getDaftarUser'])->name('daftarUser');//user: penggemar/penjual
     Route::get('status/{user}/{id}', [MasterUsers::class,'ubahStatus']);//user: penggemar/penjual
     Route::get('konfirmasi-penjual', [MasterUsers::class,'konfirmasiPenjual'])->name('konfirmasi');
     Route::post('konfirmasi', [MasterUsers::class,'ubahKonfirmasi']);
     Route::get('lelang/{jenis}', [MasterLelang::class,'getLelang'])->name('semuaLelang');//jenis: daftar/transaksi/laporan?
+    // tambahan catatan sidang lelang
+    Route::post('cari-transaksi', [MasterLelang::class,'cariTransaksi']);
+    Route::post('laporan-pdf/', [MasterLelang::class,'buatLaporan']);
+    // end tambahan catatan sidang lelang
     Route::get('detail-lelang/{id}', [MasterLelang::class,'detailLelang'])->name('detailLelang');
     Route::post('perbaikan-lelang', [MasterLelang::class,'perbaikanLelang']);
     Route::get('non-aktif/{id}',[MasterLelang::class,'nonaktifLelang']);

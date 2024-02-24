@@ -12,16 +12,35 @@
             @yield('content')
         @include('layouts.footers.guest.footer')
 
+    @elseif (\Request::is('laporan-pdf'))
+        {{-- @include('layouts.navbars.auth.sidebar')<!-- -user--> --}}
+        <main class="main-content position-relative h-100 mt-2 border-radius-lg ">{{-- {{ (Request::is('rtl') ? 'overflow-hidden' : '') }}; max-height-vh-100: kalo ini hilang, bisa print all  --}}
+            {{-- @include('layouts.navbars.auth.nav') --}}
+            <div class="container-fluid py-3">
+                @yield('content')
+                @include('layouts.footers.auth.footer')
+            </div>
+        </main>
     @else
-            {{-- (\Request::is('rtl'))
-            @include('layouts.navbars.auth.sidebar-rtl')
-            <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg overflow-hidden">
-                @include('layouts.navbars.auth.nav-rtl')
-                <div class="container-fluid py-4">
-                    @yield('content')
-                    @include('layouts.footers.auth.footer')
-                </div>
-            </main> --}}
+        @include('layouts.navbars.auth.sidebar')<!-- -user-->
+        <main class="main-content position-relative h-100 mt-2 border-radius-lg ">{{-- {{ (Request::is('rtl') ? 'overflow-hidden' : '') }}; max-height-vh-100: kalo ini hilang, bisa print all  --}}
+            @include('layouts.navbars.auth.nav')
+            <div class="container-fluid py-3">
+                @yield('content')
+                @include('layouts.footers.auth.footer')
+            </div>
+        </main>
+        {{-- @include('components.fixed-plugin') --}}
+    @endif
+        {{-- @if(\Request::is('rtl'))
+        @include('layouts.navbars.auth.sidebar-rtl')
+        <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg overflow-hidden">
+            @include('layouts.navbars.auth.nav-rtl')
+            <div class="container-fluid py-4">
+                @yield('content')
+                @include('layouts.footers.auth.footer')
+            </div>
+        </main> --}}
 
         {{--
         @if (\Request::is('profile'))
@@ -38,17 +57,6 @@
                     @yield('content')
                 </main>
             </div>
-            @include('layouts.footers.auth.footer')
-        @else --}}
-            @include('layouts.navbars.auth.sidebar')<!-- -user-->
-            <main class="main-content position-relative h-100 mt-2 border-radius-lg ">{{-- {{ (Request::is('rtl') ? 'overflow-hidden' : '') }}; max-height-vh-100: kalo ini hilang, bisa print all  --}}
-                @include('layouts.navbars.auth.nav')
-                <div class="container-fluid py-3">
-                    @yield('content')
-                    @include('layouts.footers.auth.footer')
-                </div>
-            </main>
-        {{-- @endif --}}
-        {{-- @include('components.fixed-plugin') --}}
-    @endif
+            @include('layouts.footers.auth.footer') --}}
+    {{-- @endif --}}
 @endsection
